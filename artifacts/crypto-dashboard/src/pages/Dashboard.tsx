@@ -53,7 +53,7 @@ export default function DashboardPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-white text-sm font-medium">Raymond's Portfolio</p>
+                <p className="text-white text-sm font-medium">Charles's Portfolio</p>
                 <p className="text-green-400 text-[11px] flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />VERIFIED
                 </p>
