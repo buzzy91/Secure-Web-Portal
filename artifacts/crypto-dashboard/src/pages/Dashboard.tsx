@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Eye, EyeOff, Plus, ArrowUpRight } from "lucide-react";
+import { Eye, EyeOff, Plus, ArrowUpRight, AlertTriangle } from "lucide-react";
+import { TOTAL_SENT, WALLET_TRANSACTIONS } from "@/data/walletHistory";
 import { useQuery } from "@tanstack/react-query";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
@@ -154,8 +155,30 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* Wallet Activity Alert */}
+        <div className="mx-4 mt-5">
+          <button onClick={() => navigate("/wallet-activity")}
+            className="w-full bg-red-950/40 border border-red-800/50 rounded-2xl p-4 flex items-start gap-3 text-left hover:border-red-600/60 transition-colors">
+            <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <p className="text-red-400 text-sm font-semibold mb-1">Wallet Activity — Evidence Record</p>
+              <p className="text-gray-300 text-xs leading-relaxed">
+                {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound USDT transfers detected · <span className="text-red-400 font-bold">{TOTAL_SENT.toFixed(1)} USDT drained</span>
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {WALLET_TRANSACTIONS.filter(t => t.type === "sent").slice(0, 3).map(tx => (
+                  <span key={tx.id} className="text-[10px] bg-red-900/30 text-red-300 px-2 py-0.5 rounded-full border border-red-800/40">
+                    -{tx.amount} USDT · {tx.date.replace("Jun ", "Jun ")} {tx.time}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" className="w-4 h-4 flex-shrink-0 mt-0.5"><path d="M9 18l6-6-6-6" /></svg>
+          </button>
+        </div>
+
         {/* My Assets */}
-        <div className="mx-4 mt-6 mb-4">
+        <div className="mx-4 mt-5 mb-4">
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-white font-semibold">My Assets</p>

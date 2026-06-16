@@ -60,10 +60,14 @@ export default function TopBar() {
                 { label: "Community", path: "/community" },
                 { label: "Crypto AI", path: "/crypto-ai" },
                 { label: "Transactions", path: "/transactions" },
+                { label: "Wallet Activity", path: "/wallet-activity", alert: true },
               ].map((item) => (
                 <button key={item.path} onClick={() => { navigate(item.path); setMenuOpen(false); }}
                   className="w-full flex items-center justify-between py-4 border-b border-[#1e2530]">
-                  <span className="text-white text-base">{item.label}</span>
+                  <span className={`text-base ${(item as any).alert ? "text-red-400 flex items-center gap-2" : "text-white"}`}>
+                    {(item as any).alert && <span className="w-2 h-2 rounded-full bg-red-400 inline-block animate-pulse" />}
+                    {item.label}
+                  </span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" className="w-4 h-4"><path d="M9 18l6-6-6-6" /></svg>
                 </button>
               ))}
