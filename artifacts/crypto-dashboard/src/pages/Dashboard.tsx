@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Eye, EyeOff, Plus, ArrowUpRight, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell } from "lucide-react";
 import { TOTAL_SENT, WALLET_TRANSACTIONS } from "@/data/walletHistory";
 import { useQuery } from "@tanstack/react-query";
 import TopBar from "@/components/TopBar";
@@ -16,6 +16,11 @@ const PORTFOLIO_AMOUNTS: Record<string, number> = {
   bitcoin: 0.002,
   ethereum: 0.15,
   tether: 298.55,
+};
+const COIN_COLORS: Record<string, string> = {
+  bitcoin: "#f7931a",
+  ethereum: "#627eea",
+  tether: "#26a17b",
 };
 
 export default function DashboardPage() {
@@ -33,66 +38,148 @@ export default function DashboardPage() {
   });
 
   const portfolioCoins = markets?.filter((c) => PORTFOLIO_COINS.includes(c.id)) ?? [];
-
-  const portfolioValue = portfolioCoins.reduce((sum, coin) => {
-    return sum + (PORTFOLIO_AMOUNTS[coin.id] ?? 0) * coin.current_price;
-  }, 0);
-
+  const portfolioValue = portfolioCoins.reduce((sum, coin) => sum + (PORTFOLIO_AMOUNTS[coin.id] ?? 0) * coin.current_price, 0);
   const displayValue = portfolioValue > 0 ? portfolioValue : 701.0;
 
+  const totalPortfolio = portfolioCoins.reduce((s, c) => s + (PORTFOLIO_AMOUNTS[c.id] ?? 0) * c.current_price, 0) || 701;
+  const allCoinsUp = portfolioCoins.every(c => c.price_change_percentage_24h >= 0);
+
   return (
-    <div className="min-h-screen bg-[#0a0b0f] pb-20">
+    <div className="min-h-screen bg-[#060810] pb-20">
       <TopBar />
+
+      {/* Scrolling ticker bar */}
+      <div className="bg-[#0d1117] border-b border-[#1e2530] overflow-hidden py-1.5">
+        <div className="flex gap-6 animate-marquee whitespace-nowrap px-4" style={{ animation: "marquee 22s linear infinite" }}>
+          {(portfolioCoins.length > 0 ? portfolioCoins : [
+            { symbol: "btc", current_price: 66500, price_change_percentage_24h: 1.2 },
+            { symbol: "eth", current_price: 1802, price_change_percentage_24h: 2.6 },
+            { symbol: "usdt", current_price: 1.0, price_change_percentage_24h: 0.01 },
+          ] as any[]).concat(portfolioCoins).map((c, i) => {
+            const up = c.price_change_percentage_24h >= 0;
+            return (
+              <span key={i} className="text-[11px] font-medium flex items-center gap-1">
+                <span className="text-gray-400">{c.symbol?.toUpperCase()}</span>
+                <span className="text-white">${c.current_price?.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                <span className={up ? "text-green-400" : "text-red-400"}>{up ? "▲" : "▼"}{Math.abs(c.price_change_percentage_24h).toFixed(2)}%</span>
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="overflow-y-auto">
-        {/* Portfolio card */}
-        <div className="mx-4 mt-4 bg-[#0d1826] rounded-2xl p-4 border border-[#1e2d3d]">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#4f7dfa" strokeWidth="2" className="w-4 h-4">
-                  <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-                </svg>
+        {/* Gradient portfolio hero */}
+        <div className="mx-4 mt-4 rounded-3xl overflow-hidden relative" style={{ background: "linear-gradient(135deg, #0f2042 0%, #1a1060 50%, #0d1a38 100%)" }}>
+          <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 70% 30%, #4f7dfa 0%, transparent 60%)" }} />
+          <div className="relative p-5">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#6ea4ff" strokeWidth="2" className="w-4 h-4">
+                    <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-blue-200 text-xs font-medium">Charles's Portfolio</p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+                    <span className="text-green-400 text-[10px] font-semibold">VERIFIED & ACTIVE</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-white text-sm font-medium">Charles's Portfolio</p>
-                <p className="text-green-400 text-[11px] flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />VERIFIED
-                </p>
+              <div className="flex items-center gap-2">
+                <button className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <Bell className="w-3.5 h-3.5 text-white" />
+                </button>
+                <button onClick={() => setHideBalance(!hideBalance)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  {hideBalance ? <EyeOff className="w-3.5 h-3.5 text-white" /> : <Eye className="w-3.5 h-3.5 text-white" />}
+                </button>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="border border-green-500 text-green-400 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3"><path d="M12 1L3 5.5v6.5c0 5 3.8 9.7 9 10.9 5.2-1.2 9-5.9 9-10.9V5.5L12 1z" /></svg>
-                CLEARED
-              </span>
-              <button onClick={() => setHideBalance(!hideBalance)} className="text-gray-400">
-                {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
+
+            <p className="text-blue-200/70 text-xs mb-1 uppercase tracking-wider">Total Balance</p>
+            <p className="text-white text-4xl font-bold tracking-tight mb-0.5">
+              {hideBalance ? "••••••" : `$${displayValue.toFixed(2)}`}
+            </p>
+            <p className="text-blue-300/70 text-sm mb-4">USDT equivalent</p>
+
+            <div className="flex items-center gap-3 mb-5">
+              <div className={`flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${allCoinsUp ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"}`}>
+                {allCoinsUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                {allCoinsUp ? "+2.31%" : "-0.8%"} today
+              </div>
+              <span className="text-blue-300/50 text-xs">+$12.89 all time</span>
+            </div>
+
+            {/* Allocation bar */}
+            <div className="mb-2">
+              <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
+                {portfolioCoins.length > 0 ? portfolioCoins.map((c) => {
+                  const val = (PORTFOLIO_AMOUNTS[c.id] ?? 0) * c.current_price;
+                  const pct = (val / totalPortfolio) * 100;
+                  return <div key={c.id} className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: COIN_COLORS[c.id] ?? "#4f7dfa" }} />;
+                }) : (
+                  <>
+                    <div className="h-full rounded-full bg-[#f7931a]" style={{ width: "19%" }} />
+                    <div className="h-full rounded-full bg-[#627eea]" style={{ width: "38%" }} />
+                    <div className="h-full rounded-full bg-[#26a17b]" style={{ width: "43%" }} />
+                  </>
+                )}
+              </div>
+              <div className="flex justify-between mt-1.5">
+                {["BTC", "ETH", "USDT"].map((sym, i) => (
+                  <span key={sym} className="text-[10px] text-blue-200/50 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: [COIN_COLORS.bitcoin, COIN_COLORS.ethereum, COIN_COLORS.tether][i] }} />
+                    {sym}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-          <p className="text-gray-400 text-xs mb-1">Total Portfolio Value</p>
-          <p className="text-white text-3xl font-bold mb-1">
-            {hideBalance ? "••••••••" : `$${displayValue.toFixed(2)}`}
-          </p>
-          <p className="text-gray-400 text-xs mb-2">USDT</p>
-          <div className="flex items-center gap-3 text-xs">
-            <span className="text-green-400 bg-green-900/30 px-2 py-0.5 rounded-full flex items-center gap-1">↗ +0.001%</span>
-            <span className="text-gray-400">+$12.89 all time</span>
+
+          {/* Action buttons inside card */}
+          <div className="grid grid-cols-4 border-t border-white/10">
+            {[
+              { label: "Send", icon: "↗" },
+              { label: "Receive", icon: "↙" },
+              { label: "Buy", icon: "+" },
+              { label: "Swap", icon: "↺" },
+            ].map((a, i) => (
+              <button key={a.label}
+                onClick={a.label === "Buy" ? () => navigate("/markets") : undefined}
+                className={`flex flex-col items-center gap-1.5 py-4 ${i < 3 ? "border-r border-white/10" : ""} hover:bg-white/5 transition-colors`}>
+                <span className="text-lg text-white">{a.icon}</span>
+                <span className="text-[11px] text-blue-200/70 font-medium">{a.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="grid grid-cols-4 gap-3 mx-4 mt-4">
+        {/* Rewards / promo strip */}
+        <div className="mx-4 mt-3 bg-gradient-to-r from-purple-900/50 to-blue-900/40 rounded-2xl border border-purple-700/30 p-3 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center flex-shrink-0">
+            <Gift className="w-4 h-4 text-purple-300" />
+          </div>
+          <div className="flex-1">
+            <p className="text-white text-xs font-semibold">Earn up to 14.5% p.a.</p>
+            <p className="text-purple-300/70 text-[10px]">Stake USDT and earn daily rewards</p>
+          </div>
+          <button className="bg-purple-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap">Stake</button>
+        </div>
+
+        {/* Quick stats row */}
+        <div className="grid grid-cols-3 gap-3 mx-4 mt-3">
           {[
-            { label: "Send", icon: "↗", color: "#c47d1a", bg: "#2a1e0a" },
-            { label: "Receive", icon: "↙", color: "#1a9c6b", bg: "#0a2019" },
-            { label: "Withdraw", icon: "💳", color: "#4f7dfa", bg: "#0a1226" },
-            { label: "Swap", icon: "↺", color: "#8b5cf6", bg: "#160f2a" },
-          ].map((action) => (
-            <button key={action.label} className="flex flex-col items-center gap-2 rounded-2xl p-3" style={{ backgroundColor: action.bg }}>
-              <span className="text-xl" style={{ color: action.color }}>{action.icon}</span>
-              <span className="text-xs font-medium" style={{ color: action.color }}>{action.label}</span>
-            </button>
+            { label: "Portfolio", value: `$${displayValue.toFixed(0)}`, sub: "Total", color: "text-white" },
+            { label: "Invested", value: totalInvested > 0 ? fmt(totalInvested) : "$701", sub: "All time", color: "text-white" },
+            { label: "Assets", value: String(Math.max(portfolioCoins.length, 3)), sub: "Holdings", color: "text-white" },
+          ].map((s) => (
+            <div key={s.label} className="bg-[#0d1117] rounded-2xl p-3 border border-[#1e2530]">
+              <p className="text-gray-500 text-[9px] font-bold tracking-widest uppercase mb-1.5">{s.label}</p>
+              <p className={`text-sm font-bold ${s.color}`}>{s.value}</p>
+              <p className="text-gray-600 text-[10px]">{s.sub}</p>
+            </div>
           ))}
         </div>
 
@@ -100,7 +187,7 @@ export default function DashboardPage() {
         <div className="mx-4 mt-4 bg-[#0d1117] rounded-full flex p-1 border border-[#1e2530]">
           {(["overview", "transaction"] as const).map((t) => (
             <button key={t} onClick={() => setActiveTab(t)}
-              className={`flex-1 py-2 rounded-full text-sm font-medium capitalize transition-colors ${activeTab === t ? "bg-white text-black" : "text-gray-400"}`}>
+              className={`flex-1 py-2 rounded-full text-sm font-semibold capitalize transition-all ${activeTab === t ? "bg-white text-black shadow" : "text-gray-400"}`}>
               {t === "transaction" ? "Transactions" : "Overview"}
             </button>
           ))}
@@ -108,45 +195,142 @@ export default function DashboardPage() {
 
         {activeTab === "overview" ? (
           <>
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-3 mx-4 mt-4">
-              {[
-                { label: "PORTFOLIO", value: `$${displayValue.toFixed(2)}`, sub: "Available" },
-                { label: "TOTAL INVESTED", value: totalInvested > 0 ? fmt(totalInvested) : "$701.00", sub: "All time" },
-                { label: "ASSETS HELD", value: String(Math.max(portfolioCoins.length, 3)), sub: "Coins" },
-              ].map((s) => (
-                <div key={s.label} className="bg-[#0d1117] rounded-xl p-3 border border-[#1e2530]">
-                  <p className="text-gray-500 text-[9px] font-semibold tracking-wide uppercase mb-1">{s.label}</p>
-                  <p className="text-white text-xs font-bold">{s.value}</p>
-                  <p className="text-gray-500 text-[10px]">{s.sub}</p>
-                </div>
-              ))}
+            <div className="mx-4 mt-4">
+              <PerformanceChart />
             </div>
-            <div className="mx-4 mt-4"><PerformanceChart /></div>
-          </>
-        ) : (
-          <div className="mx-4 mt-4">
-            {transactions.length === 0 ? (
-              <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-8 text-center">
-                <p className="text-gray-400 text-sm mb-3">No transactions yet</p>
-                <button onClick={() => navigate("/markets")} className="text-blue-400 text-sm flex items-center gap-1 mx-auto">
-                  <ArrowUpRight className="w-4 h-4" /> Go to Markets to Buy
+
+            {/* My Assets */}
+            <div className="mx-4 mt-5 mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-white font-bold text-base">My Assets</p>
+                  <p className="text-gray-500 text-xs">{Math.max(portfolioCoins.length, 3)} holdings · Live prices</p>
+                </div>
+                <button onClick={() => navigate("/markets")} className="flex items-center gap-1 bg-blue-600/20 border border-blue-600/30 text-blue-400 text-xs px-3 py-1.5 rounded-full">
+                  <Plus className="w-3 h-3" /> Add Asset
                 </button>
               </div>
+              <div className="space-y-2.5">
+                {portfolioCoins.length > 0 ? portfolioCoins.map((coin) => {
+                  const amount = PORTFOLIO_AMOUNTS[coin.id] ?? 0;
+                  const value = amount * coin.current_price;
+                  const alloc = (value / totalPortfolio) * 100;
+                  const up = coin.price_change_percentage_24h >= 0;
+                  return (
+                    <button key={coin.id} onClick={() => navigate(`/coin/${coin.id}`)}
+                      className="w-full bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3 text-left hover:border-blue-600/30 transition-colors">
+                      <div className="relative">
+                        <img src={coin.image} alt={coin.name} className="w-11 h-11 rounded-full" />
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0a0b0f]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm font-semibold">{coin.name}</p>
+                        <p className="text-gray-500 text-xs">{amount} {coin.symbol.toUpperCase()}</p>
+                        <div className="mt-1.5 w-full h-1 bg-[#1e2530] rounded-full overflow-hidden">
+                          <div className="h-full rounded-full" style={{ width: `${alloc}%`, backgroundColor: COIN_COLORS[coin.id] ?? "#4f7dfa" }} />
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-white text-sm font-bold">${value.toFixed(2)}</p>
+                        <p className={`text-xs font-medium mt-0.5 ${up ? "text-green-400" : "text-red-400"}`}>
+                          {up ? "▲" : "▼"} {Math.abs(coin.price_change_percentage_24h).toFixed(2)}%
+                        </p>
+                        <p className="text-gray-600 text-[10px] mt-0.5">{alloc.toFixed(0)}% of portfolio</p>
+                      </div>
+                    </button>
+                  );
+                }) : (
+                  [
+                    { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "0.00200000", value: "$133.14", change: "+1.31%", up: true, color: "#f7931a", letter: "B", alloc: 19 },
+                    { id: "ethereum", name: "Ethereum", symbol: "ETH", amount: "0.15000000", value: "$269.31", change: "+3.96%", up: true, color: "#627eea", letter: "E", alloc: 38 },
+                    { id: "tether", name: "Tether", symbol: "USDT", amount: "298.55", value: "$298.55", change: "+0.01%", up: true, color: "#26a17b", letter: "T", alloc: 43 },
+                  ].map((a) => (
+                    <button key={a.id} onClick={() => navigate(`/coin/${a.id}`)}
+                      className="w-full bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3 text-left hover:border-blue-600/30 transition-colors">
+                      <div className="relative">
+                        <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-white text-sm" style={{ backgroundColor: a.color }}>{a.letter}</div>
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0a0b0f]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm font-semibold">{a.name}</p>
+                        <p className="text-gray-500 text-xs">{a.amount} {a.symbol}</p>
+                        <div className="mt-1.5 w-full h-1 bg-[#1e2530] rounded-full overflow-hidden">
+                          <div className="h-full rounded-full" style={{ width: `${a.alloc}%`, backgroundColor: a.color }} />
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-white text-sm font-bold">{a.value}</p>
+                        <p className={`text-xs font-medium mt-0.5 ${a.up ? "text-green-400" : "text-red-400"}`}>{a.up ? "▲" : "▼"} {a.change.replace(/[+\-]/, "")}</p>
+                        <p className="text-gray-600 text-[10px] mt-0.5">{a.alloc}% of portfolio</p>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Wallet Activity Alert */}
+            <div className="mx-4 mb-4">
+              <button onClick={() => navigate("/wallet-activity")}
+                className="w-full bg-red-950/30 border border-red-800/40 rounded-2xl p-4 flex items-start gap-3 text-left hover:border-red-600/60 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-red-900/40 flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle className="w-4 h-4 text-red-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-red-400 text-sm font-bold mb-0.5">Wallet Evidence Record</p>
+                  <p className="text-gray-400 text-xs leading-relaxed">
+                    {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound transfers · <span className="text-red-400 font-semibold">{TOTAL_SENT.toFixed(1)} USDT total drained</span>
+                  </p>
+                  <p className="text-gray-600 text-[11px] mt-1">Jun 9–11, 2026 · Tap to view full evidence</p>
+                </div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" className="w-4 h-4 flex-shrink-0 mt-0.5"><path d="M9 18l6-6-6-6" /></svg>
+              </button>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="mx-4 mb-4">
+              <p className="text-white font-bold text-base mb-3">Quick Actions</p>
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => navigate("/markets")} className="bg-blue-600/10 border border-blue-600/20 rounded-2xl p-4 text-left hover:bg-blue-600/20 transition-colors">
+                  <Zap className="w-6 h-6 text-blue-400 mb-2" />
+                  <p className="text-white text-sm font-semibold">Buy Crypto</p>
+                  <p className="text-gray-500 text-xs mt-0.5">100+ coins available</p>
+                </button>
+                <button onClick={() => navigate("/crypto-ai")} className="bg-purple-600/10 border border-purple-600/20 rounded-2xl p-4 text-left hover:bg-purple-600/20 transition-colors">
+                  <span className="text-2xl block mb-2">🤖</span>
+                  <p className="text-white text-sm font-semibold">Ask Crypto AI</p>
+                  <p className="text-gray-500 text-xs mt-0.5">Market insights, live</p>
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="mx-4 mt-4 mb-4">
+            {transactions.length === 0 ? (
+              <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-10 text-center">
+                <div className="w-14 h-14 rounded-full bg-[#1e2530] flex items-center justify-center mx-auto mb-4">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="1.5" className="w-7 h-7"><path d="M12 2v10m0 0-3-3m3 3 3-3M6 17l-2 2 2 2M18 17l2 2-2 2M3 19h18" /></svg>
+                </div>
+                <p className="text-white text-sm font-semibold mb-1">No transactions yet</p>
+                <p className="text-gray-500 text-xs mb-4">Buy or receive crypto to see history here</p>
+                <button onClick={() => navigate("/markets")} className="bg-blue-600 text-white text-sm px-5 py-2.5 rounded-xl font-semibold">Browse Markets</button>
+              </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {transactions.slice(0, 20).map((tx) => (
                   <div key={tx.id} className="bg-[#0d1117] rounded-xl p-4 border border-[#1e2530] flex items-center gap-3">
-                    <img src={tx.coinImage} alt={tx.coinName} className="w-9 h-9 rounded-full" />
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${tx.type === "buy" ? "bg-green-900/30" : "bg-red-900/30"}`}>
+                      <img src={tx.coinImage} alt={tx.coinName} className="w-6 h-6 rounded-full" />
+                    </div>
                     <div className="flex-1">
-                      <p className="text-white text-sm font-medium">{tx.coinName}</p>
-                      <p className="text-gray-400 text-xs">{new Date(tx.date).toLocaleDateString()}</p>
+                      <p className="text-white text-sm font-semibold">{tx.coinName}</p>
+                      <p className="text-gray-500 text-xs capitalize">{tx.type} · {new Date(tx.date).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
                       <p className={`text-sm font-bold ${tx.type === "buy" ? "text-green-400" : "text-red-400"}`}>
                         {tx.type === "buy" ? "+" : "-"}{tx.amount} {tx.coinSymbol.toUpperCase()}
                       </p>
-                      <p className="text-gray-400 text-xs">${tx.total.toFixed(2)}</p>
+                      <p className="text-gray-500 text-xs">${tx.total.toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -154,133 +338,21 @@ export default function DashboardPage() {
             )}
           </div>
         )}
-
-        {/* Wallet Activity Alert */}
-        <div className="mx-4 mt-5">
-          <button onClick={() => navigate("/wallet-activity")}
-            className="w-full bg-red-950/40 border border-red-800/50 rounded-2xl p-4 flex items-start gap-3 text-left hover:border-red-600/60 transition-colors">
-            <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <p className="text-red-400 text-sm font-semibold mb-1">Wallet Activity — Evidence Record</p>
-              <p className="text-gray-300 text-xs leading-relaxed">
-                {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound USDT transfers detected · <span className="text-red-400 font-bold">{TOTAL_SENT.toFixed(1)} USDT drained</span>
-              </p>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {WALLET_TRANSACTIONS.filter(t => t.type === "sent").slice(0, 3).map(tx => (
-                  <span key={tx.id} className="text-[10px] bg-red-900/30 text-red-300 px-2 py-0.5 rounded-full border border-red-800/40">
-                    -{tx.amount} USDT · {tx.date.replace("Jun ", "Jun ")} {tx.time}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" className="w-4 h-4 flex-shrink-0 mt-0.5"><path d="M9 18l6-6-6-6" /></svg>
-          </button>
-        </div>
-
-        {/* My Assets */}
-        <div className="mx-4 mt-5 mb-4">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-white font-semibold">My Assets</p>
-              <p className="text-gray-400 text-xs">{portfolioCoins.length} holdings · Available for withdrawal</p>
-            </div>
-            <button onClick={() => navigate("/markets")} className="flex items-center gap-1 text-blue-400 text-sm">
-              <Plus className="w-4 h-4" /> Add
-            </button>
-          </div>
-          <div className="space-y-3">
-            {portfolioCoins.length > 0 ? portfolioCoins.map((coin) => {
-              const amount = PORTFOLIO_AMOUNTS[coin.id] ?? 0;
-              const value = amount * coin.current_price;
-              const up = coin.price_change_percentage_24h >= 0;
-              return (
-                <button key={coin.id} onClick={() => navigate(`/coin/${coin.id}`)}
-                  className="w-full bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3 text-left">
-                  <div className="relative">
-                    <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full" />
-                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0a0b0f]" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white text-sm font-medium">{coin.name}</p>
-                    <p className="text-gray-400 text-xs">{amount} {coin.symbol.toUpperCase()}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-white text-sm font-semibold">${value.toFixed(2)}</p>
-                    <p className={`text-xs ${up ? "text-green-400" : "text-red-400"}`}>{fmtPct(coin.price_change_percentage_24h)}</p>
-                  </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" className="w-4 h-4 flex-shrink-0"><path d="M9 18l6-6-6-6" /></svg>
-                </button>
-              );
-            }) : (
-              /* Fallback static assets */
-              [
-                { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "0.00200000", value: "$133.14", change: "+1.31%", up: true, color: "#f7931a", letter: "B" },
-                { id: "ethereum", name: "Ethereum", symbol: "ETH", amount: "0.15000000", value: "$269.31", change: "+3.96%", up: true, color: "#627eea", letter: "E" },
-                { id: "tether", name: "Tether", symbol: "USDT", amount: "298.55", value: "$298.55", change: "+0.01%", up: true, color: "#26a17b", letter: "T" },
-              ].map((a) => (
-                <button key={a.id} onClick={() => navigate(`/coin/${a.id}`)}
-                  className="w-full bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3 text-left">
-                  <div className="relative">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style={{ backgroundColor: a.color }}>{a.letter}</div>
-                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0a0b0f]" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white text-sm font-medium">{a.name}</p>
-                    <p className="text-gray-400 text-xs">{a.amount} {a.symbol}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-white text-sm font-semibold">{a.value}</p>
-                    <p className={`text-xs ${a.up ? "text-green-400" : "text-red-400"}`}>{a.change}</p>
-                  </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" className="w-4 h-4 flex-shrink-0"><path d="M9 18l6-6-6-6" /></svg>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Holdings from transactions */}
-        {holdings.length > 0 && (
-          <div className="mx-4 mb-4">
-            <p className="text-white font-semibold mb-3">My Holdings</p>
-            <div className="space-y-3">
-              {holdings.map((h) => {
-                const livePrice = markets?.find((m) => m.id === h.coinId)?.current_price ?? 0;
-                const currentValue = h.amount * livePrice;
-                const pnl = currentValue - h.totalInvested;
-                return (
-                  <div key={h.coinId} className="bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3">
-                    <img src={h.coinImage} alt={h.coinName} className="w-10 h-10 rounded-full" />
-                    <div className="flex-1">
-                      <p className="text-white text-sm font-medium">{h.coinName}</p>
-                      <p className="text-gray-400 text-xs">{h.amount.toFixed(6)} {h.coinSymbol.toUpperCase()}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-white text-sm font-semibold">${currentValue.toFixed(2)}</p>
-                      <p className={`text-xs ${pnl >= 0 ? "text-green-400" : "text-red-400"}`}>
-                        {pnl >= 0 ? "+" : ""}{pnl.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Chat bubble */}
-      <div className="fixed bottom-20 right-4 z-30">
-        <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg cursor-pointer relative">
-          <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6"><path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0zm-6 0a10 10 0 1 1 20 0A10 10 0 0 1 2 12z" /></svg>
-          <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-[#0a0b0f]" />
-        </div>
-      </div>
+      {/* AI chat bubble */}
+      <button onClick={() => navigate("/crypto-ai")} className="fixed bottom-24 right-4 z-30 w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-900/40 relative">
+        <span className="text-white text-xl">🤖</span>
+        <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-[#060810]" />
+      </button>
 
       <BottomNav />
-
       {showWelcome && <WelcomeModal onViewAssets={() => { setShowWelcome(false); setShowAssets(true); }} onClose={() => setShowWelcome(false)} />}
       {showAssets && <AssetsModal onProceed={() => setShowAssets(false)} onClose={() => setShowAssets(false)} portfolioValue={displayValue} />}
+
+      <style>{`
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      `}</style>
     </div>
   );
 }
