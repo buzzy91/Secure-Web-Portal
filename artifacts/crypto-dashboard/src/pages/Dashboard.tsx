@@ -142,7 +142,7 @@ export default function DashboardPage() {
           {/* Pending Recovery Transaction bar */}
           <button
             onClick={() => setShowRestrictionModal(true)}
-            className="w-full border-t border-white/10 bg-amber-900/30 hover:bg-amber-900/40 transition-colors px-5 py-3.5 flex items-center gap-3"
+            className="relative z-10 w-full border-t border-white/10 bg-amber-900/30 hover:bg-amber-900/40 transition-colors px-5 py-3.5 flex items-center gap-3"
           >
             <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
               <Clock className="w-4 h-4 text-amber-400" />
