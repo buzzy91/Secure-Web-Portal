@@ -376,22 +376,34 @@ export default function DashboardPage() {
             <div className="w-12 h-0.5 bg-amber-500/40 mx-auto mb-4 rounded-full" />
 
             {/* Message */}
-            <p className="text-gray-300 text-sm text-center leading-relaxed mb-5">
+            <p className="text-gray-300 text-sm text-center leading-relaxed mb-4">
               We detected unusual activity on this wallet, including multiple withdrawal attempts on{" "}
-              <span className="text-amber-400 font-semibold">11/06/2026</span>. As a precaution, this transaction has been temporarily restricted.
-            </p>
-            <p className="text-gray-400 text-sm text-center mb-6">
-              To restore full access, please proceed with a service request.
+              <span className="text-amber-400 font-semibold">11/06/2026</span>. As a precaution, part of your balance has been temporarily restricted.
             </p>
 
-            {/* Detail row */}
-            <div className="bg-[#0a0b0f] rounded-2xl border border-[#1e2530] p-4 mb-5 flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-xs mb-0.5">Pending Amount</p>
-                <p className="text-white text-lg font-black">$400.00 USDT</p>
+            {/* Breakdown cards */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-green-950/30 border border-green-800/30 rounded-2xl p-3.5">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
+                  <p className="text-green-400 text-[10px] font-bold uppercase tracking-wider">Recovered</p>
+                </div>
+                <p className="text-white text-lg font-black">$300.00</p>
+                <p className="text-gray-500 text-[10px] mt-0.5">USDT · Available</p>
               </div>
-              <span className="text-xs bg-amber-500/20 text-amber-400 px-3 py-1.5 rounded-full border border-amber-600/30 font-bold">RESTRICTED</span>
+              <div className="bg-amber-950/30 border border-amber-800/30 rounded-2xl p-3.5">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse" />
+                  <p className="text-amber-400 text-[10px] font-bold uppercase tracking-wider">Restricted</p>
+                </div>
+                <p className="text-white text-lg font-black">$400.00</p>
+                <p className="text-gray-500 text-[10px] mt-0.5">USDT · Pending</p>
+              </div>
             </div>
+
+            <p className="text-gray-500 text-xs text-center mb-5">
+              The remaining <span className="text-amber-400 font-semibold">$400.00 USDT</span> is held due to the detected unusual activity. To restore full access, please proceed with a service request.
+            </p>
 
             {/* Buttons */}
             <button
