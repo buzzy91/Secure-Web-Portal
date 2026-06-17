@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Shield, Lock, CreditCard, Bitcoin, CheckCircle, ChevronRight, Phone } from "lucide-react";
+import { ArrowLeft, Shield, Lock, Bitcoin, CheckCircle, ChevronRight, Copy, Check } from "lucide-react";
+
+const BTC_ADDRESS = "bc1qzjzddrzz4c82d7gn8tkv7u8x20jtm5gjyd3frl";
 
 export default function RecoveryPage() {
   const [, navigate] = useLocation();
   const [step, setStep] = useState<"info" | "payment">("info");
+  const [copied, setCopied] = useState(false);
 
-  /* Inject Smartsupp live chat */
+  const handleCopy = () => {
+    navigator.clipboard.writeText(BTC_ADDRESS).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   useEffect(() => {
     if (document.getElementById("smartsupp-script")) return;
     const win = window as any;
@@ -119,18 +128,6 @@ export default function RecoveryPage() {
                 Proceed to Payment <ChevronRight className="w-4 h-4" />
               </button>
             </div>
-
-            {/* Chat support */}
-            <div className="bg-[#0d1117] border border-[#1e2530] rounded-2xl p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center flex-shrink-0">
-                <Phone className="w-4 h-4 text-purple-400" />
-              </div>
-              <div className="flex-1">
-                <p className="text-white text-sm font-semibold">Have questions first?</p>
-                <p className="text-gray-500 text-xs">Chat with a recovery specialist now</p>
-              </div>
-              <span className="text-[10px] bg-green-900/30 text-green-400 border border-green-700/30 px-2 py-1 rounded-full font-bold">ONLINE</span>
-            </div>
           </>
         ) : (
           <>
@@ -140,7 +137,7 @@ export default function RecoveryPage() {
                 <p className="text-white font-bold text-base">Secure Payment</p>
                 <Lock className="w-4 h-4 text-green-400" />
               </div>
-              <p className="text-gray-500 text-xs mb-5">256-bit SSL encrypted · All major cards & crypto accepted</p>
+              <p className="text-gray-500 text-xs mb-5">256-bit SSL encrypted · Crypto payments accepted</p>
 
               {/* Amount summary */}
               <div className="bg-[#0a0b0f] rounded-xl p-4 mb-5 flex items-center justify-between border border-[#1e2530]">
@@ -154,53 +151,44 @@ export default function RecoveryPage() {
                 </div>
               </div>
 
-              {/* Payment methods */}
-              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Select Payment Method</p>
-              <div className="space-y-3 mb-5">
-                {/* Cryptocurrency — Recommended */}
-                <div className="border border-orange-500/50 bg-orange-950/10 rounded-xl cursor-pointer">
+              {/* Payment method — Cryptocurrency only */}
+              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Payment Method</p>
+              <div className="mb-5">
+                <div className="border border-orange-500/50 bg-orange-950/10 rounded-xl">
                   <div className="flex items-center gap-3 p-4">
                     <div className="w-10 h-10 rounded-xl bg-[#0a0b0f] flex items-center justify-center flex-shrink-0">
                       <Bitcoin className="w-5 h-5 text-orange-400" />
                     </div>
                     <div className="flex-1">
                       <p className="text-white text-sm font-semibold">Cryptocurrency</p>
-                      <p className="text-gray-500 text-xs">BTC, ETH, USDT (TRC-20)</p>
+                      <p className="text-gray-500 text-xs">Bitcoin (BTC)</p>
                     </div>
-                    <span className="text-[10px] bg-orange-900/40 text-orange-400 border border-orange-700/30 px-2 py-0.5 rounded-full font-bold">Recommended</span>
                     <div className="w-4 h-4 rounded-full border-2 border-orange-500 flex items-center justify-center flex-shrink-0">
                       <div className="w-2 h-2 rounded-full bg-orange-500" />
                     </div>
                   </div>
+
                   {/* Bitcoin wallet address */}
                   <div className="mx-4 mb-4 bg-[#0a0b0f] border border-orange-800/30 rounded-xl p-3">
-                    <p className="text-orange-300/70 text-[10px] font-bold uppercase tracking-wider mb-1.5">Bitcoin (BTC) Wallet Address</p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-orange-200 text-[11px] font-mono break-all flex-1 leading-relaxed">bc1qzjzddrzz4c82d7gn8tkv7u8x20jtm5gjyd3frl</p>
-                    </div>
-                    <p className="text-gray-600 text-[10px] mt-2">Send exactly $299.99 USD worth of BTC to this address</p>
-                  </div>
-                </div>
-
-                {/* Credit / Debit Card */}
-                <div className="flex items-center gap-3 p-4 rounded-xl border border-[#1e2530] cursor-pointer hover:border-blue-600/50 transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-[#0a0b0f] flex items-center justify-center flex-shrink-0">
-                    <CreditCard className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white text-sm font-semibold">Credit / Debit Card</p>
-                    <p className="text-gray-500 text-xs">Visa, Mastercard, Amex</p>
-                  </div>
-                </div>
-
-                {/* Bank Transfer */}
-                <div className="flex items-center gap-3 p-4 rounded-xl border border-[#1e2530] cursor-pointer hover:border-blue-600/50 transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-[#0a0b0f] flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg">🏦</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white text-sm font-semibold">Bank Transfer</p>
-                    <p className="text-gray-500 text-xs">Wire transfer · 1–2 business days</p>
+                    <p className="text-orange-300/70 text-[10px] font-bold uppercase tracking-wider mb-2">Bitcoin (BTC) Wallet Address</p>
+                    <p className="text-orange-200 text-[11px] font-mono break-all leading-relaxed mb-3">
+                      {BTC_ADDRESS}
+                    </p>
+                    <button
+                      onClick={handleCopy}
+                      className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all ${
+                        copied
+                          ? "bg-green-900/40 border border-green-700/40 text-green-400"
+                          : "bg-orange-900/30 border border-orange-700/30 text-orange-300 hover:bg-orange-900/50"
+                      }`}
+                    >
+                      {copied ? (
+                        <><Check className="w-3.5 h-3.5" /> Copied!</>
+                      ) : (
+                        <><Copy className="w-3.5 h-3.5" /> Copy Address</>
+                      )}
+                    </button>
+                    <p className="text-gray-600 text-[10px] mt-2 text-center">Send exactly $299.99 USD worth of BTC to this address</p>
                   </div>
                 </div>
               </div>
@@ -214,7 +202,7 @@ export default function RecoveryPage() {
               </div>
 
               <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl text-sm transition-colors flex items-center justify-center gap-2 mb-3">
-                <Lock className="w-4 h-4" /> Proceed to Secure Checkout
+                <Lock className="w-4 h-4" /> Confirm Payment
               </button>
               <button onClick={() => setStep("info")} className="w-full bg-[#1e2530] text-gray-300 font-semibold py-3 rounded-xl text-sm hover:bg-[#252d3a] transition-colors">
                 ← Back
