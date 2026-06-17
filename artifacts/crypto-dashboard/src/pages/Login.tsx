@@ -94,14 +94,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-8 flex justify-center">
-          <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg cursor-pointer relative">
-            <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6">
-              <path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0zm-6 0a10 10 0 1 1 20 0A10 10 0 0 1 2 12z" />
-            </svg>
-            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-[#0a0b0f]" />
-          </div>
-        </div>
       </div>
     </div>
   );

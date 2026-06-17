@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell } from "lucide-react";
+import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell, Clock, ShieldAlert, X, PhoneCall } from "lucide-react";
 import { TOTAL_SENT, WALLET_TRANSACTIONS } from "@/data/walletHistory";
 import { useQuery } from "@tanstack/react-query";
 import TopBar from "@/components/TopBar";
@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [showAssets, setShowAssets] = useState(false);
   const [hideBalance, setHideBalance] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "transaction">("overview");
+  const [showRestrictionModal, setShowRestrictionModal] = useState(false);
   const [, navigate] = useLocation();
   const { transactions, holdings, totalInvested } = useTransactions();
 
@@ -138,22 +139,23 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Action buttons inside card */}
-          <div className="grid grid-cols-4 border-t border-white/10">
-            {[
-              { label: "Send", icon: "↗" },
-              { label: "Receive", icon: "↙" },
-              { label: "Buy", icon: "+" },
-              { label: "Swap", icon: "↺" },
-            ].map((a, i) => (
-              <button key={a.label}
-                onClick={a.label === "Buy" ? () => navigate("/markets") : undefined}
-                className={`flex flex-col items-center gap-1.5 py-4 ${i < 3 ? "border-r border-white/10" : ""} hover:bg-white/5 transition-colors`}>
-                <span className="text-lg text-white">{a.icon}</span>
-                <span className="text-[11px] text-blue-200/70 font-medium">{a.label}</span>
-              </button>
-            ))}
-          </div>
+          {/* Pending Recovery Transaction bar */}
+          <button
+            onClick={() => setShowRestrictionModal(true)}
+            className="w-full border-t border-white/10 bg-amber-900/30 hover:bg-amber-900/40 transition-colors px-5 py-3.5 flex items-center gap-3"
+          >
+            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+              <Clock className="w-4 h-4 text-amber-400" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-amber-300 text-xs font-bold">Pending Recovery Transaction</p>
+              <p className="text-amber-400/70 text-[11px]">Tap to view details and proceed</p>
+            </div>
+            <div className="text-right flex-shrink-0">
+              <p className="text-amber-300 text-sm font-black">$400.00</p>
+              <span className="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full border border-amber-600/30 font-semibold">PENDING</span>
+            </div>
+          </button>
         </div>
 
         {/* Rewards / promo strip */}
@@ -350,8 +352,70 @@ export default function DashboardPage() {
       {showWelcome && <WelcomeModal onViewAssets={() => { setShowWelcome(false); setShowAssets(true); }} onClose={() => setShowWelcome(false)} />}
       {showAssets && <AssetsModal onProceed={() => setShowAssets(false)} onClose={() => setShowAssets(false)} portfolioValue={displayValue} />}
 
+      {/* Transaction Restriction Modal */}
+      {showRestrictionModal && (
+        <div className="fixed inset-0 z-50 flex items-end">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowRestrictionModal(false)} />
+          <div className="relative w-full bg-[#0d1117] rounded-t-3xl border-t border-[#1e2530] p-6 pb-10 animate-slide-up">
+            {/* Close */}
+            <button onClick={() => setShowRestrictionModal(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#1e2530] flex items-center justify-center">
+              <X className="w-4 h-4 text-gray-400" />
+            </button>
+
+            {/* Icon */}
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-amber-900/30 border-2 border-amber-600/40 flex items-center justify-center">
+                <ShieldAlert className="w-8 h-8 text-amber-400" />
+              </div>
+            </div>
+
+            {/* Title */}
+            <h2 className="text-white text-xl font-bold text-center mb-2">Transaction Temporarily Restricted</h2>
+
+            {/* Divider */}
+            <div className="w-12 h-0.5 bg-amber-500/40 mx-auto mb-4 rounded-full" />
+
+            {/* Message */}
+            <p className="text-gray-300 text-sm text-center leading-relaxed mb-5">
+              We detected unusual activity on this wallet, including multiple withdrawal attempts on{" "}
+              <span className="text-amber-400 font-semibold">11/06/2026</span>. As a precaution, this transaction has been temporarily restricted.
+            </p>
+            <p className="text-gray-400 text-sm text-center mb-6">
+              To restore full access, please proceed with a service request.
+            </p>
+
+            {/* Detail row */}
+            <div className="bg-[#0a0b0f] rounded-2xl border border-[#1e2530] p-4 mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-xs mb-0.5">Pending Amount</p>
+                <p className="text-white text-lg font-black">$400.00 USDT</p>
+              </div>
+              <span className="text-xs bg-amber-500/20 text-amber-400 px-3 py-1.5 rounded-full border border-amber-600/30 font-bold">RESTRICTED</span>
+            </div>
+
+            {/* Buttons */}
+            <button
+              onClick={() => { setShowRestrictionModal(false); navigate("/recovery"); }}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl text-sm transition-colors mb-3 flex items-center justify-center gap-2"
+            >
+              <ShieldAlert className="w-4 h-4" />
+              Request Recovery Assistance
+            </button>
+            <button
+              onClick={() => setShowRestrictionModal(false)}
+              className="w-full bg-[#1e2530] text-gray-300 font-semibold py-4 rounded-2xl text-sm flex items-center justify-center gap-2 hover:bg-[#252d3a] transition-colors"
+            >
+              <PhoneCall className="w-4 h-4" />
+              Contact Support
+            </button>
+          </div>
+        </div>
+      )}
+
       <style>{`
         @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .animate-slide-up { animation: slide-up 0.3s ease-out; }
       `}</style>
     </div>
   );
