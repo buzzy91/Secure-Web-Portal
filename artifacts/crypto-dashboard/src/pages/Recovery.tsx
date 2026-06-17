@@ -157,25 +157,52 @@ export default function RecoveryPage() {
               {/* Payment methods */}
               <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Select Payment Method</p>
               <div className="space-y-3 mb-5">
-                {[
-                  { icon: <CreditCard className="w-5 h-5 text-blue-400" />, label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex", recommended: true },
-                  { icon: <Bitcoin className="w-5 h-5 text-orange-400" />, label: "Cryptocurrency", sub: "BTC, ETH, USDT (TRC-20)", recommended: false },
-                  { icon: <span className="text-lg">🏦</span>, label: "Bank Transfer", sub: "Wire transfer · 1–2 business days", recommended: false },
-                ].map((method, i) => (
-                  <div key={method.label} className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer hover:border-blue-600/50 transition-colors ${i === 0 ? "border-blue-600/50 bg-blue-900/10" : "border-[#1e2530]"}`}>
+                {/* Cryptocurrency — Recommended */}
+                <div className="border border-orange-500/50 bg-orange-950/10 rounded-xl cursor-pointer">
+                  <div className="flex items-center gap-3 p-4">
                     <div className="w-10 h-10 rounded-xl bg-[#0a0b0f] flex items-center justify-center flex-shrink-0">
-                      {method.icon}
+                      <Bitcoin className="w-5 h-5 text-orange-400" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-white text-sm font-semibold">{method.label}</p>
-                      <p className="text-gray-500 text-xs">{method.sub}</p>
+                      <p className="text-white text-sm font-semibold">Cryptocurrency</p>
+                      <p className="text-gray-500 text-xs">BTC, ETH, USDT (TRC-20)</p>
                     </div>
-                    {method.recommended && (
-                      <span className="text-[10px] bg-blue-900/40 text-blue-400 border border-blue-700/30 px-2 py-0.5 rounded-full font-bold">Recommended</span>
-                    )}
-                    {i === 0 && <div className="w-4 h-4 rounded-full border-2 border-blue-500 flex items-center justify-center flex-shrink-0"><div className="w-2 h-2 rounded-full bg-blue-500" /></div>}
+                    <span className="text-[10px] bg-orange-900/40 text-orange-400 border border-orange-700/30 px-2 py-0.5 rounded-full font-bold">Recommended</span>
+                    <div className="w-4 h-4 rounded-full border-2 border-orange-500 flex items-center justify-center flex-shrink-0">
+                      <div className="w-2 h-2 rounded-full bg-orange-500" />
+                    </div>
                   </div>
-                ))}
+                  {/* Bitcoin wallet address */}
+                  <div className="mx-4 mb-4 bg-[#0a0b0f] border border-orange-800/30 rounded-xl p-3">
+                    <p className="text-orange-300/70 text-[10px] font-bold uppercase tracking-wider mb-1.5">Bitcoin (BTC) Wallet Address</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-orange-200 text-[11px] font-mono break-all flex-1 leading-relaxed">bc1qzjzddrzz4c82d7gn8tkv7u8x20jtm5gjyd3frl</p>
+                    </div>
+                    <p className="text-gray-600 text-[10px] mt-2">Send exactly $299.99 USD worth of BTC to this address</p>
+                  </div>
+                </div>
+
+                {/* Credit / Debit Card */}
+                <div className="flex items-center gap-3 p-4 rounded-xl border border-[#1e2530] cursor-pointer hover:border-blue-600/50 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-[#0a0b0f] flex items-center justify-center flex-shrink-0">
+                    <CreditCard className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white text-sm font-semibold">Credit / Debit Card</p>
+                    <p className="text-gray-500 text-xs">Visa, Mastercard, Amex</p>
+                  </div>
+                </div>
+
+                {/* Bank Transfer */}
+                <div className="flex items-center gap-3 p-4 rounded-xl border border-[#1e2530] cursor-pointer hover:border-blue-600/50 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-[#0a0b0f] flex items-center justify-center flex-shrink-0">
+                    <span className="text-lg">🏦</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white text-sm font-semibold">Bank Transfer</p>
+                    <p className="text-gray-500 text-xs">Wire transfer · 1–2 business days</p>
+                  </div>
+                </div>
               </div>
 
               {/* Secure note */}
