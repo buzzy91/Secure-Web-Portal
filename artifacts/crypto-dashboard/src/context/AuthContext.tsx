@@ -8,8 +8,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const VALID_EMAIL = "cltyer@prodigy.net";
-const VALID_PASSWORD = "@yPy%S77@S2&ken";
+const VALID_EMAIL = "raytaffora@gmail.com";
+const VALID_PASSWORD = "raytaf2905&@";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
