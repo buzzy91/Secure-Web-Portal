@@ -242,9 +242,9 @@ export default function DashboardPage() {
                   );
                 }) : (
                   [
-                    { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "0.00200000", value: "$133.14", change: "+1.31%", up: true, color: "#f7931a", letter: "B", alloc: 19 },
-                    { id: "ethereum", name: "Ethereum", symbol: "ETH", amount: "0.15000000", value: "$269.31", change: "+3.96%", up: true, color: "#627eea", letter: "E", alloc: 38 },
-                    { id: "tether", name: "Tether", symbol: "USDT", amount: "298.55", value: "$298.55", change: "+0.01%", up: true, color: "#26a17b", letter: "T", alloc: 43 },
+                    { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "2.10532000", value: "$221,475.20", change: "+1.31%", up: true, color: "#f7931a", letter: "B", alloc: 29 },
+                    { id: "ethereum", name: "Ethereum", symbol: "ETH", amount: "57.34200000", value: "$106,465.37", change: "+3.96%", up: true, color: "#627eea", letter: "E", alloc: 14 },
+                    { id: "tether", name: "Tether", symbol: "USDT", amount: "427,009.43", value: "$427,009.43", change: "+0.01%", up: true, color: "#26a17b", letter: "T", alloc: 57 },
                   ].map((a) => (
                     <button key={a.id} onClick={() => navigate(`/coin/${a.id}`)}
                       className="w-full bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3 text-left hover:border-blue-600/30 transition-colors">

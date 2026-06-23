@@ -4,15 +4,11 @@ interface Props {
   portfolioValue?: number;
 }
 
-export default function AssetsModal({ onProceed, onClose, portfolioValue = 701.0 }: Props) {
-  const btcValue = portfolioValue * (133.14 / 701.0);
-  const ethValue = portfolioValue * (269.31 / 701.0);
-  const usdtValue = portfolioValue * (298.55 / 701.0);
-
+export default function AssetsModal({ onProceed, onClose, portfolioValue = 755894.450 }: Props) {
   const holdings = [
-    { symbol: "B", name: "Bitcoin", sub: "0.00200000 BTC", value: `$${btcValue.toFixed(2)}`, color: "#f7931a" },
-    { symbol: "E", name: "Ethereum", sub: "0.15000000 ETH", value: `$${ethValue.toFixed(2)}`, color: "#627eea" },
-    { symbol: "U", name: "Tether", sub: "298.55 USDT", value: `$${usdtValue.toFixed(2)}`, color: "#26a17b" },
+    { symbol: "B", name: "Bitcoin", sub: "2.10532000 BTC", value: "$221,475.20", color: "#f7931a" },
+    { symbol: "E", name: "Ethereum", sub: "57.34200000 ETH", value: "$106,465.37", color: "#627eea" },
+    { symbol: "U", name: "Tether", sub: "427,009.43 USDT", value: "$427,009.43", color: "#26a17b" },
   ];
 
   return (
@@ -51,7 +47,7 @@ export default function AssetsModal({ onProceed, onClose, portfolioValue = 701.0
         </div>
         <div className="bg-[#0a1226] rounded-xl p-4 flex items-center justify-between mb-4 border border-blue-900/30">
           <p className="text-gray-400 text-xs">Total Portfolio Value</p>
-          <p className="text-white font-bold text-lg">${portfolioValue.toFixed(2)}</p>
+          <p className="text-white font-bold text-lg">$755,894.450</p>
         </div>
         <button onClick={onProceed} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl transition-colors text-sm">
           Proceed to Dashboard
