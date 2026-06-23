@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell, Clock, ShieldAlert, X, PhoneCall } from "lucide-react";
+import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell, ShieldAlert, X, ArrowUpRight, ArrowDownLeft, ArrowDown, RefreshCw } from "lucide-react";
 import { TOTAL_SENT, WALLET_TRANSACTIONS } from "@/data/walletHistory";
 import { useQuery } from "@tanstack/react-query";
 import TopBar from "@/components/TopBar";
@@ -82,7 +82,7 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-blue-200 text-xs font-medium">Charles's Portfolio</p>
+                  <p className="text-blue-200 text-xs font-medium">Raymond's Portfolio</p>
                   <div className="flex items-center gap-1 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
                     <span className="text-green-400 text-[10px] font-semibold">VERIFIED & ACTIVE</span>
@@ -101,7 +101,7 @@ export default function DashboardPage() {
 
             <p className="text-blue-200/70 text-xs mb-1 uppercase tracking-wider">Total Balance</p>
             <p className="text-white text-4xl font-bold tracking-tight mb-0.5">
-              {hideBalance ? "••••••" : `$${displayValue.toFixed(2)}`}
+              {hideBalance ? "••••••" : "$755,894.450"}
             </p>
             <p className="text-blue-300/70 text-sm mb-4">USDT equivalent</p>
 
@@ -139,23 +139,22 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Pending Recovery Transaction bar */}
-          <button
-            onClick={() => setShowRestrictionModal(true)}
-            className="relative z-10 w-full border-t border-white/10 bg-amber-900/30 hover:bg-amber-900/40 transition-colors px-5 py-3.5 flex items-center gap-3"
-          >
-            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-              <Clock className="w-4 h-4 text-amber-400" />
-            </div>
-            <div className="flex-1 text-left">
-              <p className="text-amber-300 text-xs font-bold">Pending Recovery Transaction</p>
-              <p className="text-amber-400/70 text-[11px]">Tap to view details and proceed</p>
-            </div>
-            <div className="text-right flex-shrink-0">
-              <p className="text-amber-300 text-sm font-black">$400.00</p>
-              <span className="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full border border-amber-600/30 font-semibold">PENDING</span>
-            </div>
-          </button>
+          {/* Quick Action Buttons */}
+          <div className="border-t border-white/10 px-5 py-4 grid grid-cols-4 gap-2">
+            {[
+              { icon: <ArrowUpRight className="w-5 h-5" />, label: "Send", color: "text-blue-300", bg: "bg-blue-500/20" },
+              { icon: <ArrowDownLeft className="w-5 h-5" />, label: "Receive", color: "text-green-300", bg: "bg-green-500/20" },
+              { icon: <ArrowDown className="w-5 h-5" />, label: "Withdraw", color: "text-purple-300", bg: "bg-purple-500/20" },
+              { icon: <RefreshCw className="w-5 h-5" />, label: "Swap", color: "text-amber-300", bg: "bg-amber-500/20" },
+            ].map(({ icon, label, color, bg }) => (
+              <button key={label} onClick={() => setShowRestrictionModal(true)} className="flex flex-col items-center gap-1.5">
+                <div className={`w-11 h-11 rounded-full ${bg} flex items-center justify-center`}>
+                  <span className={color}>{icon}</span>
+                </div>
+                <span className="text-white/70 text-xs font-medium">{label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Rewards / promo strip */}
