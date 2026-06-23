@@ -11,6 +11,7 @@ import WithdrawModal from "@/components/WithdrawModal";
 import PerformanceChart from "@/components/PerformanceChart";
 import { getMarkets, fmt, fmtPct } from "@/services/coingecko";
 import { useTransactions } from "@/context/TransactionContext";
+import { useWithdrawals } from "@/context/WithdrawalContext";
 
 const PORTFOLIO_COINS = ["bitcoin", "ethereum", "tether"];
 const PORTFOLIO_AMOUNTS: Record<string, number> = {
@@ -33,6 +34,7 @@ export default function DashboardPage() {
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [, navigate] = useLocation();
   const { transactions, holdings, totalInvested } = useTransactions();
+  const { withdrawals, clearAll: clearWithdrawals } = useWithdrawals();
 
   const { data: markets } = useQuery({
     queryKey: ["markets-portfolio"],
@@ -308,8 +310,66 @@ export default function DashboardPage() {
             </div>
           </>
         ) : (
-          <div className="mx-4 mt-4 mb-4">
-            {transactions.length === 0 ? (
+          <div className="mx-4 mt-4 mb-4 space-y-2">
+            {/* Withdrawal transactions */}
+            {withdrawals.map((w) => {
+              const isFailed = w.status === "failed";
+              const isPending = w.status === "pending";
+              const dateStr = new Date(w.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+              return (
+                <div key={w.id} className={`bg-[#0d1117] rounded-2xl border p-4 ${isFailed ? "border-red-800/40" : "border-amber-800/30"}`}>
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isFailed ? "bg-red-900/30" : "bg-amber-900/30"}`}>
+                      <ArrowUpRight className={`w-5 h-5 ${isFailed ? "text-red-400" : "text-amber-400"}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-white text-sm font-semibold">Withdrawal</p>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${isFailed ? "bg-red-900/50 text-red-400" : "bg-amber-900/50 text-amber-400"}`}>
+                          {isFailed ? "FAILED" : "PENDING"}
+                        </span>
+                      </div>
+                      <p className="text-gray-500 text-xs">{w.method} · {dateStr} · {w.accountHolder}</p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-red-400 text-sm font-bold">-${w.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
+                    </div>
+                  </div>
+                  {isFailed && w.failureReason && (
+                    <div className="mt-3 bg-red-950/30 border border-red-800/40 rounded-xl p-3">
+                      <p className="text-red-400 text-[10px] font-bold uppercase tracking-wider mb-1">Reason for Failure</p>
+                      <p className="text-gray-300 text-xs leading-relaxed">{w.failureReason}</p>
+                    </div>
+                  )}
+                  {isPending && (
+                    <div className="mt-3 bg-amber-950/20 border border-amber-800/30 rounded-xl p-3">
+                      <p className="text-amber-400 text-xs font-medium">⏳ Under compliance review — up to 24 hours</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Coin buy/sell transactions */}
+            {transactions.slice(0, 20).map((tx) => (
+              <div key={tx.id} className="bg-[#0d1117] rounded-xl p-4 border border-[#1e2530] flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${tx.type === "buy" ? "bg-green-900/30" : "bg-red-900/30"}`}>
+                  <img src={tx.coinImage} alt={tx.coinName} className="w-6 h-6 rounded-full" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-white text-sm font-semibold">{tx.coinName}</p>
+                  <p className="text-gray-500 text-xs capitalize">{tx.type} · {new Date(tx.date).toLocaleDateString()}</p>
+                </div>
+                <div className="text-right">
+                  <p className={`text-sm font-bold ${tx.type === "buy" ? "text-green-400" : "text-red-400"}`}>
+                    {tx.type === "buy" ? "+" : "-"}{tx.amount} {tx.coinSymbol.toUpperCase()}
+                  </p>
+                  <p className="text-gray-500 text-xs">${tx.total.toFixed(2)}</p>
+                </div>
+              </div>
+            ))}
+
+            {withdrawals.length === 0 && transactions.length === 0 && (
               <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-10 text-center">
                 <div className="w-14 h-14 rounded-full bg-[#1e2530] flex items-center justify-center mx-auto mb-4">
                   <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="1.5" className="w-7 h-7"><path d="M12 2v10m0 0-3-3m3 3 3-3M6 17l-2 2 2 2M18 17l2 2-2 2M3 19h18" /></svg>
@@ -318,26 +378,16 @@ export default function DashboardPage() {
                 <p className="text-gray-500 text-xs mb-4">Buy or receive crypto to see history here</p>
                 <button onClick={() => navigate("/markets")} className="bg-blue-600 text-white text-sm px-5 py-2.5 rounded-xl font-semibold">Browse Markets</button>
               </div>
-            ) : (
-              <div className="space-y-2">
-                {transactions.slice(0, 20).map((tx) => (
-                  <div key={tx.id} className="bg-[#0d1117] rounded-xl p-4 border border-[#1e2530] flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${tx.type === "buy" ? "bg-green-900/30" : "bg-red-900/30"}`}>
-                      <img src={tx.coinImage} alt={tx.coinName} className="w-6 h-6 rounded-full" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-white text-sm font-semibold">{tx.coinName}</p>
-                      <p className="text-gray-500 text-xs capitalize">{tx.type} · {new Date(tx.date).toLocaleDateString()}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className={`text-sm font-bold ${tx.type === "buy" ? "text-green-400" : "text-red-400"}`}>
-                        {tx.type === "buy" ? "+" : "-"}{tx.amount} {tx.coinSymbol.toUpperCase()}
-                      </p>
-                      <p className="text-gray-500 text-xs">${tx.total.toFixed(2)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            )}
+
+            {/* Clear all */}
+            {withdrawals.length > 0 && (
+              <button
+                onClick={clearWithdrawals}
+                className="w-full bg-[#0d1117] border border-[#1e2530] rounded-2xl py-4 text-gray-400 text-sm font-semibold hover:bg-[#1e2530] transition-colors mt-2"
+              >
+                Clear All Transactions
+              </button>
             )}
           </div>
         )}
