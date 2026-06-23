@@ -74,7 +74,7 @@ export default function DashboardPage() {
       <div className="overflow-y-auto">
         {/* Gradient portfolio hero */}
         <div className="mx-4 mt-4 rounded-3xl overflow-hidden relative" style={{ background: "linear-gradient(135deg, #0f2042 0%, #1a1060 50%, #0d1a38 100%)" }}>
-          <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 70% 30%, #4f7dfa 0%, transparent 60%)" }} />
+          <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ background: "radial-gradient(circle at 70% 30%, #4f7dfa 0%, transparent 60%)" }} />
           <div className="relative p-5">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-2">
