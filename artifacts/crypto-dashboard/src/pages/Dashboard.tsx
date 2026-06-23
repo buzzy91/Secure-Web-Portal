@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell, ShieldAlert, X, ArrowUpRight, ArrowDownLeft, ArrowDown, RefreshCw } from "lucide-react";
+import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell, ShieldAlert, X, ArrowUpRight, ArrowDownLeft, ArrowDown, RefreshCw, PhoneCall } from "lucide-react";
 import { TOTAL_SENT, WALLET_TRANSACTIONS } from "@/data/walletHistory";
 import { useQuery } from "@tanstack/react-query";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import WelcomeModal from "@/components/WelcomeModal";
 import AssetsModal from "@/components/AssetsModal";
+import WithdrawModal from "@/components/WithdrawModal";
 import PerformanceChart from "@/components/PerformanceChart";
 import { getMarkets, fmt, fmtPct } from "@/services/coingecko";
 import { useTransactions } from "@/context/TransactionContext";
@@ -29,6 +30,7 @@ export default function DashboardPage() {
   const [hideBalance, setHideBalance] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "transaction">("overview");
   const [showRestrictionModal, setShowRestrictionModal] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
   const [, navigate] = useLocation();
   const { transactions, holdings, totalInvested } = useTransactions();
 
@@ -142,12 +144,12 @@ export default function DashboardPage() {
           {/* Quick Action Buttons */}
           <div className="border-t border-white/10 px-5 py-4 grid grid-cols-4 gap-2">
             {[
-              { icon: <ArrowUpRight className="w-5 h-5" />, label: "Send", color: "text-blue-300", bg: "bg-blue-500/20" },
-              { icon: <ArrowDownLeft className="w-5 h-5" />, label: "Receive", color: "text-green-300", bg: "bg-green-500/20" },
-              { icon: <ArrowDown className="w-5 h-5" />, label: "Withdraw", color: "text-purple-300", bg: "bg-purple-500/20" },
-              { icon: <RefreshCw className="w-5 h-5" />, label: "Swap", color: "text-amber-300", bg: "bg-amber-500/20" },
-            ].map(({ icon, label, color, bg }) => (
-              <button key={label} onClick={() => setShowRestrictionModal(true)} className="flex flex-col items-center gap-1.5">
+              { icon: <ArrowUpRight className="w-5 h-5" />, label: "Send", color: "text-blue-300", bg: "bg-blue-500/20", action: () => setShowRestrictionModal(true) },
+              { icon: <ArrowDownLeft className="w-5 h-5" />, label: "Receive", color: "text-green-300", bg: "bg-green-500/20", action: () => setShowRestrictionModal(true) },
+              { icon: <ArrowDown className="w-5 h-5" />, label: "Withdraw", color: "text-purple-300", bg: "bg-purple-500/20", action: () => setShowWithdraw(true) },
+              { icon: <RefreshCw className="w-5 h-5" />, label: "Swap", color: "text-amber-300", bg: "bg-amber-500/20", action: () => setShowRestrictionModal(true) },
+            ].map(({ icon, label, color, bg, action }) => (
+              <button key={label} onClick={action} className="flex flex-col items-center gap-1.5">
                 <div className={`w-11 h-11 rounded-full ${bg} flex items-center justify-center`}>
                   <span className={color}>{icon}</span>
                 </div>
@@ -350,6 +352,7 @@ export default function DashboardPage() {
       <BottomNav />
       {showWelcome && <WelcomeModal onViewAssets={() => { setShowWelcome(false); setShowAssets(true); }} onClose={() => setShowWelcome(false)} />}
       {showAssets && <AssetsModal onProceed={() => setShowAssets(false)} onClose={() => setShowAssets(false)} portfolioValue={displayValue} />}
+      {showWithdraw && <WithdrawModal onClose={() => setShowWithdraw(false)} />}
 
       {/* Transaction Restriction Modal */}
       {showRestrictionModal && (
