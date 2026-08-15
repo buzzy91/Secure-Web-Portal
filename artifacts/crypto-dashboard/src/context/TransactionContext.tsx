@@ -35,7 +35,7 @@ interface TransactionContextType {
 
 const TransactionContext = createContext<TransactionContextType | null>(null);
 
-const STORAGE_KEY = "crypto_transactions";
+const STORAGE_KEY = "crypto_transactions_v2";
 const WATCHLIST_KEY = "crypto_watchlist";
 
 export function TransactionProvider({ children }: { children: ReactNode }) {

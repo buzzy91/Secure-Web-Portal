@@ -22,21 +22,9 @@ interface WithdrawalContextType {
   clearAll: () => void;
 }
 
-const STORAGE_KEY = "crypto_withdrawals";
+const STORAGE_KEY = "crypto_withdrawals_v2";
 
-const PRESEEDED: WithdrawalTx[] = [
-  {
-    id: "wd-preseeded-001",
-    amount: 25000,
-    method: "Chime",
-    asset: "usdt",
-    accountHolder: "Melinda",
-    date: "2026-06-04T00:00:00.000Z",
-    expiresAt: "2026-06-05T00:00:00.000Z",
-    status: "failed",
-    failureReason: FAILURE_REASON,
-  },
-];
+const PRESEEDED: WithdrawalTx[] = [];
 
 const WithdrawalContext = createContext<WithdrawalContextType | null>(null);
 
@@ -44,9 +32,7 @@ export function WithdrawalProvider({ children }: { children: ReactNode }) {
   const [withdrawals, setWithdrawals] = useState<WithdrawalTx[]>(() => {
     try {
       const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-      if (!stored) return PRESEEDED;
-      const hasPreseeded = stored.some((w: WithdrawalTx) => w.id === "wd-preseeded-001");
-      return hasPreseeded ? stored : [...PRESEEDED, ...stored];
+      return stored ?? PRESEEDED;
     } catch {
       return PRESEEDED;
     }

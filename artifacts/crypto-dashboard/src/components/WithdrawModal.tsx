@@ -11,16 +11,17 @@ type Step = "method" | "details" | "pending" | "failed";
 const METHODS = [
   {
     id: "chime",
-    name: "Chime",
+    name: "Crypto Wallet",
     popular: true,
-    sub: "Instant · Chime account",
+    sub: "Send to external wallet address",
     fee: "Fee: 0%",
     time: "24h processing",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-        <rect x="5" y="2" width="14" height="20" rx="3" stroke="#00d4aa" strokeWidth="1.8" />
-        <rect x="8" y="5" width="8" height="1.5" rx="0.75" fill="#00d4aa" />
-        <circle cx="12" cy="16" r="1.5" fill="#00d4aa" />
+        <rect x="2" y="6" width="20" height="14" rx="2" stroke="#00d4aa" strokeWidth="1.8" />
+        <path d="M16 13a1 1 0 1 1 2 0 1 1 0 0 1-2 0z" fill="#00d4aa" />
+        <path d="M2 10h20" stroke="#00d4aa" strokeWidth="1.5" />
+        <path d="M6 6V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke="#00d4aa" strokeWidth="1.5" />
       </svg>
     ),
     iconBg: "bg-[#00d4aa]/10 border border-[#00d4aa]/30",
