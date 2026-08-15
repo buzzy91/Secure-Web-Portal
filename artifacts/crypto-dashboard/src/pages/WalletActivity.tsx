@@ -41,10 +41,6 @@ function TxDetail({ tx, onClose }: { tx: WalletTx; onClose: () => void }) {
 
         <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-4 space-y-3 mb-4">
           <div className="flex justify-between items-center">
-            <span className="text-gray-400 text-sm">Date</span>
-            <span className="text-white text-sm font-medium">{tx.date} {tx.time}</span>
-          </div>
-          <div className="flex justify-between items-center border-t border-[#1e2530] pt-3">
             <span className="text-gray-400 text-sm">Status</span>
             <span className="text-green-400 text-sm font-semibold">{tx.status}</span>
           </div>
@@ -156,7 +152,7 @@ export default function WalletActivityPage() {
           <div>
             <p className="text-red-400 text-sm font-semibold mb-1">Unauthorized Transfers Detected</p>
             <p className="text-gray-300 text-xs leading-relaxed">
-              {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound USDT transactions were recorded from Melinda's wallet to an external address between Jun 9–11, 2026. Total drained: <span className="text-red-400 font-bold">{TOTAL_SENT.toFixed(2)} USDT</span>
+              {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound USDT transactions were recorded from Melinda's wallet to an external address. Total drained: <span className="text-red-400 font-bold">{TOTAL_SENT.toFixed(2)} USDT</span>
             </p>
           </div>
         </div>
@@ -190,43 +186,32 @@ export default function WalletActivityPage() {
         {/* TRANSACTION HISTORY TAB */}
         {activeTab === "history" && (
           <div>
-            <p className="text-gray-400 text-xs mb-3">Jun 9–11, 2026 · Tap any row for details</p>
-            {/* Group by date */}
-            {["Jun 11, 2026", "Jun 10, 2026", "Jun 9, 2026"].map((date) => {
-              const txs = WALLET_TRANSACTIONS.filter((t) => t.date === date);
-              if (!txs.length) return null;
-              return (
-                <div key={date} className="mb-4">
-                  <p className="text-gray-500 text-xs font-semibold mb-2">{date}</p>
-                  <div className="space-y-2">
-                    {txs.map((tx) => (
-                      <button key={tx.id} onClick={() => setSelectedTx(tx)}
-                        className="w-full bg-[#0d1117] rounded-xl p-4 border border-[#1e2530] flex items-center gap-3 text-left hover:border-blue-600/40 transition-colors">
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${tx.type === "sent" ? "bg-red-900/30" : "bg-green-900/30"}`}>
-                          {tx.type === "sent"
-                            ? <ArrowUpRight className="w-4 h-4 text-red-400" />
-                            : <ArrowDownLeft className="w-4 h-4 text-green-400" />
-                          }
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white text-sm font-semibold capitalize">{tx.type}</p>
-                          <p className="text-gray-400 text-xs truncate">
-                            {tx.type === "sent" ? `To: ${shortAddr(tx.to ?? "")}` : `From: ${shortAddr(tx.from ?? "")}`}
-                          </p>
-                          <p className="text-gray-500 text-[11px]">{tx.time}</p>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <p className={`text-sm font-bold ${tx.type === "sent" ? "text-red-400" : "text-green-400"}`}>
-                            {tx.type === "sent" ? "-" : "+"}{tx.amount} USDT
-                          </p>
-                          <p className="text-gray-500 text-xs">≈ ${tx.usdValue.toFixed(2)}</p>
-                        </div>
-                      </button>
-                    ))}
+            <p className="text-gray-400 text-xs mb-3">Tap any row for details</p>
+            <div className="space-y-2">
+              {WALLET_TRANSACTIONS.map((tx) => (
+                <button key={tx.id} onClick={() => setSelectedTx(tx)}
+                  className="w-full bg-[#0d1117] rounded-xl p-4 border border-[#1e2530] flex items-center gap-3 text-left hover:border-blue-600/40 transition-colors">
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${tx.type === "sent" ? "bg-red-900/30" : "bg-green-900/30"}`}>
+                    {tx.type === "sent"
+                      ? <ArrowUpRight className="w-4 h-4 text-red-400" />
+                      : <ArrowDownLeft className="w-4 h-4 text-green-400" />
+                    }
                   </div>
-                </div>
-              );
-            })}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-sm font-semibold capitalize">{tx.type}</p>
+                    <p className="text-gray-400 text-xs truncate">
+                      {tx.type === "sent" ? `To: ${shortAddr(tx.to ?? "")}` : `From: ${shortAddr(tx.from ?? "")}`}
+                    </p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className={`text-sm font-bold ${tx.type === "sent" ? "text-red-400" : "text-green-400"}`}>
+                      {tx.type === "sent" ? "-" : "+"}{tx.amount} USDT
+                    </p>
+                    <p className="text-gray-500 text-xs">≈ ${tx.usdValue.toFixed(2)}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -289,7 +274,7 @@ export default function WalletActivityPage() {
           <div className="space-y-4">
             <div className="bg-red-900/20 border border-red-800/50 rounded-2xl p-4">
               <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2">⚠ Scammer Wallet — TRONSCAN</p>
-              <p className="text-gray-300 text-xs">All outbound transactions from Melinda's wallet were routed to this address. The wallet was created Jun 8, 2026 and drained funds within 4 days.</p>
+              <p className="text-gray-300 text-xs">All outbound transactions from Melinda's wallet were routed to this address.</p>
             </div>
 
             <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-4">
@@ -313,8 +298,6 @@ export default function WalletActivityPage() {
                   { label: "TRX Staked", value: `${RECIPIENT_ACCOUNT.trxStaked} TRX` },
                   { label: "Total Transactions", value: String(RECIPIENT_ACCOUNT.transactions) },
                   { label: "Total Transfers", value: `${RECIPIENT_ACCOUNT.transfers.total} (↓${RECIPIENT_ACCOUNT.transfers.out} ↑${RECIPIENT_ACCOUNT.transfers.in})` },
-                  { label: "Latest Activity", value: RECIPIENT_ACCOUNT.latestActivity },
-                  { label: "Created (UTC)", value: RECIPIENT_ACCOUNT.created },
                 ].map((s) => (
                   <div key={s.label} className={`rounded-xl p-3 ${s.highlight ? "bg-red-900/20 border border-red-800/40" : "bg-[#0a0b0f]"}`}>
                     <p className="text-gray-500 text-[10px] mb-1">{s.label}</p>
@@ -330,7 +313,6 @@ export default function WalletActivityPage() {
                 {WALLET_TRANSACTIONS.filter((t) => t.type === "sent" && t.to === RECIPIENT_WALLET).map((tx) => (
                   <div key={tx.id} className="flex items-center justify-between py-2 border-b border-[#1e2530] last:border-0">
                     <div>
-                      <p className="text-white text-xs font-medium">{tx.date} · {tx.time}</p>
                       {tx.bandwidth && <p className="text-gray-500 text-[11px]">BW: {tx.bandwidth} · Energy: {tx.energy?.toLocaleString()}</p>}
                     </div>
                     <p className="text-red-400 text-sm font-bold">-{tx.amount} USDT</p>
