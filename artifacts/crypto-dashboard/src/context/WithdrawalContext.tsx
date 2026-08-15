@@ -22,7 +22,7 @@ interface WithdrawalContextType {
   clearAll: () => void;
 }
 
-const STORAGE_KEY = "crypto_withdrawals_v2";
+const STORAGE_KEY = "crypto_withdrawals_v3";
 
 const PRESEEDED: WithdrawalTx[] = [];
 

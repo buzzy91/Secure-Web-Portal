@@ -288,13 +288,13 @@ export default function WithdrawModal({ onClose }: Props) {
             {selectedMethod.id === "chime" && (
               <>
                 <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Chime Phone / Email</p>
-                  <input type="text" value={chimeContact} onChange={(e) => setChimeContact(e.target.value)} placeholder="Phone number or email on file"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
+                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Recipient Wallet Address</p>
+                  <input type="text" value={chimeContact} onChange={(e) => setChimeContact(e.target.value)} placeholder="Enter destination wallet address"
+                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50 font-mono" />
                 </div>
                 <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Account Holder Name</p>
-                  <input type="text" value={holderName} onChange={(e) => setHolderName(e.target.value)} placeholder="Full legal name"
+                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Recipient Name</p>
+                  <input type="text" value={holderName} onChange={(e) => setHolderName(e.target.value)} placeholder="Full name of wallet owner"
                     className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
                 </div>
               </>
