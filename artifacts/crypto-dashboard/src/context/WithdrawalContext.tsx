@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export const FAILURE_REASON =
-  "Transaction flagged by our compliance system. A mandatory processing fee of $4,988.00 must be satisfied before this transfer can be authorized and released.";
+  "Transaction flagged by our compliance system. A mandatory processing fee of $800.00 must be satisfied before this transfer can be authorized and released.";
 
 export interface WithdrawalTx {
   id: string;
