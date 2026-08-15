@@ -74,9 +74,7 @@ const METHODS = [
 ];
 
 const ASSETS = [
-  { id: "usdt", name: "Tether (USDT)", balance: "$427,009.43" },
-  { id: "btc", name: "Bitcoin (BTC)", balance: "$221,475.20" },
-  { id: "eth", name: "Ethereum (ETH)", balance: "$106,465.37" },
+  { id: "btc", name: "Bitcoin (BTC)", balance: "$292,000.00" },
 ];
 
 function pad(n: number) {
@@ -89,7 +87,7 @@ export default function WithdrawModal({ onClose }: Props) {
   const [step, setStep] = useState<Step>("method");
   const [selectedMethod, setSelectedMethod] = useState<(typeof METHODS)[0] | null>(null);
   const [amount, setAmount] = useState("");
-  const [asset, setAsset] = useState("usdt");
+  const [asset, setAsset] = useState("btc");
   const [chimeContact, setChimeContact] = useState("");
   const [holderName, setHolderName] = useState("");
   const [bankName, setBankName] = useState("");
@@ -220,7 +218,7 @@ export default function WithdrawModal({ onClose }: Props) {
 
             <div className="rounded-2xl p-4 mb-4 text-center" style={{ background: "linear-gradient(135deg, #0f2042, #1a1060)" }}>
               <p className="text-blue-200/70 text-xs mb-1">Total Portfolio Value</p>
-              <p className="text-white text-2xl font-black">$755,894.450</p>
+              <p className="text-white text-2xl font-black">$292,000.00</p>
               <p className="text-green-400 text-xs mt-1 font-medium">Available for withdrawal</p>
             </div>
 
@@ -264,7 +262,7 @@ export default function WithdrawModal({ onClose }: Props) {
                   placeholder="0.00"
                   className="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-600"
                 />
-                <button onClick={() => setAmount("755894.45")} className="text-blue-400 text-xs font-bold">MAX</button>
+                <button onClick={() => setAmount("292000.00")} className="text-blue-400 text-xs font-bold">MAX</button>
               </div>
               <p className="text-gray-600 text-xs mt-1.5 px-1">Enter the amount you wish to withdraw</p>
             </div>

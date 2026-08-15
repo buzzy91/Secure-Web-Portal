@@ -30,7 +30,7 @@ const PRESEEDED: WithdrawalTx[] = [
     amount: 25000,
     method: "Chime",
     asset: "usdt",
-    accountHolder: "Raymond Taffora",
+    accountHolder: "Melinda",
     date: "2026-06-04T00:00:00.000Z",
     expiresAt: "2026-06-05T00:00:00.000Z",
     status: "failed",

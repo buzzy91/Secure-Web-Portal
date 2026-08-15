@@ -26,7 +26,7 @@ export default function WelcomeModal({ onViewAssets, onClose }: Props) {
           <h2 className="text-2xl font-bold text-white mb-1">
             Welcome back,
           </h2>
-          <h2 className="text-2xl font-bold text-blue-400 mb-3">Raymond</h2>
+          <h2 className="text-2xl font-bold text-blue-400 mb-3">Melinda</h2>
           <p className="text-gray-400 text-sm">Your account has been successfully verified.</p>
         </div>
 

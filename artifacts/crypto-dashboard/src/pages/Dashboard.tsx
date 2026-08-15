@@ -13,16 +13,12 @@ import { getMarkets, fmt, fmtPct } from "@/services/coingecko";
 import { useTransactions } from "@/context/TransactionContext";
 import { useWithdrawals } from "@/context/WithdrawalContext";
 
-const PORTFOLIO_COINS = ["bitcoin", "ethereum", "tether"];
+const PORTFOLIO_COINS = ["bitcoin"];
 const PORTFOLIO_AMOUNTS: Record<string, number> = {
-  bitcoin: 0.002,
-  ethereum: 0.15,
-  tether: 298.55,
+  bitcoin: 2.9697,
 };
 const COIN_COLORS: Record<string, string> = {
   bitcoin: "#f7931a",
-  ethereum: "#627eea",
-  tether: "#26a17b",
 };
 
 export default function DashboardPage() {
@@ -44,9 +40,9 @@ export default function DashboardPage() {
 
   const portfolioCoins = markets?.filter((c) => PORTFOLIO_COINS.includes(c.id)) ?? [];
   const portfolioValue = portfolioCoins.reduce((sum, coin) => sum + (PORTFOLIO_AMOUNTS[coin.id] ?? 0) * coin.current_price, 0);
-  const displayValue = portfolioValue > 0 ? portfolioValue : 701.0;
+  const displayValue = portfolioValue > 0 ? portfolioValue : 292000.0;
 
-  const totalPortfolio = portfolioCoins.reduce((s, c) => s + (PORTFOLIO_AMOUNTS[c.id] ?? 0) * c.current_price, 0) || 701;
+  const totalPortfolio = portfolioCoins.reduce((s, c) => s + (PORTFOLIO_AMOUNTS[c.id] ?? 0) * c.current_price, 0) || 292000;
   const allCoinsUp = portfolioCoins.every(c => c.price_change_percentage_24h >= 0);
 
   return (
@@ -86,7 +82,7 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-blue-200 text-xs font-medium">Raymond's Portfolio</p>
+                  <p className="text-blue-200 text-xs font-medium">Melinda's Portfolio</p>
                   <div className="flex items-center gap-1 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
                     <span className="text-green-400 text-[10px] font-semibold">VERIFIED & ACTIVE</span>
@@ -105,7 +101,7 @@ export default function DashboardPage() {
 
             <p className="text-blue-200/70 text-xs mb-1 uppercase tracking-wider">Total Balance</p>
             <p className="text-white text-4xl font-bold tracking-tight mb-0.5">
-              {hideBalance ? "••••••" : "$755,894.450"}
+              {hideBalance ? "••••••" : "$292,000.00"}
             </p>
             <p className="text-blue-300/70 text-sm mb-4">USDT equivalent</p>
 
@@ -114,7 +110,7 @@ export default function DashboardPage() {
                 {allCoinsUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                 {allCoinsUp ? "+2.31%" : "-0.8%"} today
               </div>
-              <span className="text-blue-300/50 text-xs">+$12.89 all time</span>
+              <span className="text-blue-300/50 text-xs">+$18,240.00 all time</span>
             </div>
 
             {/* Allocation bar */}
@@ -125,17 +121,13 @@ export default function DashboardPage() {
                   const pct = (val / totalPortfolio) * 100;
                   return <div key={c.id} className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: COIN_COLORS[c.id] ?? "#4f7dfa" }} />;
                 }) : (
-                  <>
-                    <div className="h-full rounded-full bg-[#f7931a]" style={{ width: "19%" }} />
-                    <div className="h-full rounded-full bg-[#627eea]" style={{ width: "38%" }} />
-                    <div className="h-full rounded-full bg-[#26a17b]" style={{ width: "43%" }} />
-                  </>
+                  <div className="h-full rounded-full bg-[#f7931a]" style={{ width: "100%" }} />
                 )}
               </div>
               <div className="flex justify-between mt-1.5">
-                {["BTC", "ETH", "USDT"].map((sym, i) => (
+                {["BTC"].map((sym) => (
                   <span key={sym} className="text-[10px] text-blue-200/50 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: [COIN_COLORS.bitcoin, COIN_COLORS.ethereum, COIN_COLORS.tether][i] }} />
+                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: COIN_COLORS.bitcoin }} />
                     {sym}
                   </span>
                 ))}
@@ -177,8 +169,8 @@ export default function DashboardPage() {
         <div className="grid grid-cols-3 gap-3 mx-4 mt-3">
           {[
             { label: "Portfolio", value: `$${displayValue.toFixed(0)}`, sub: "Total", color: "text-white" },
-            { label: "Invested", value: totalInvested > 0 ? fmt(totalInvested) : "$701", sub: "All time", color: "text-white" },
-            { label: "Assets", value: String(Math.max(portfolioCoins.length, 3)), sub: "Holdings", color: "text-white" },
+            { label: "Invested", value: totalInvested > 0 ? fmt(totalInvested) : "$292,000", sub: "All time", color: "text-white" },
+            { label: "Assets", value: String(Math.max(portfolioCoins.length, 1)), sub: "Holdings", color: "text-white" },
           ].map((s) => (
             <div key={s.label} className="bg-[#0d1117] rounded-2xl p-3 border border-[#1e2530]">
               <p className="text-gray-500 text-[9px] font-bold tracking-widest uppercase mb-1.5">{s.label}</p>
@@ -209,7 +201,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-white font-bold text-base">My Assets</p>
-                  <p className="text-gray-500 text-xs">{Math.max(portfolioCoins.length, 3)} holdings · Live prices</p>
+                  <p className="text-gray-500 text-xs">{Math.max(portfolioCoins.length, 1)} holding · Live prices</p>
                 </div>
                 <button onClick={() => navigate("/markets")} className="flex items-center gap-1 bg-blue-600/20 border border-blue-600/30 text-blue-400 text-xs px-3 py-1.5 rounded-full">
                   <Plus className="w-3 h-3" /> Add Asset
@@ -246,9 +238,7 @@ export default function DashboardPage() {
                   );
                 }) : (
                   [
-                    { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "2.10532000", value: "$221,475.20", change: "+1.31%", up: true, color: "#f7931a", letter: "B", alloc: 29 },
-                    { id: "ethereum", name: "Ethereum", symbol: "ETH", amount: "57.34200000", value: "$106,465.37", change: "+3.96%", up: true, color: "#627eea", letter: "E", alloc: 14 },
-                    { id: "tether", name: "Tether", symbol: "USDT", amount: "427,009.43", value: "$427,009.43", change: "+0.01%", up: true, color: "#26a17b", letter: "T", alloc: 57 },
+                    { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "2.9697", value: "$292,000.00", change: "+1.31%", up: true, color: "#f7931a", letter: "B", alloc: 100 },
                   ].map((a) => (
                     <button key={a.id} onClick={() => navigate(`/coin/${a.id}`)}
                       className="w-full bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3 text-left hover:border-blue-600/30 transition-colors">

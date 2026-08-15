@@ -1,4 +1,4 @@
-export const CHARLES_WALLET = "TLLs5VNYsLwU3m2CDXf3J41C1F3AW7Wnxn";
+export const CHARLES_WALLET = "bc1qq0hq4dh8gdpmktxevun3cwdcfw3v4jczu93fmr";
 export const RECIPIENT_WALLET = "TJoKTNWEVhMnVBnMHoMPibqaxUdPGcQ95u";
 export const USDT_CONTRACT = "TR7NHqjeKQxGTCi8q8ZY4pL8e...";
 
