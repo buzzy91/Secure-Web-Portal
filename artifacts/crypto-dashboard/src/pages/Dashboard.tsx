@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Eye, EyeOff, Plus, AlertTriangle, TrendingUp, TrendingDown, Zap, Gift, Bell, ShieldAlert, X, ArrowUpRight, ArrowDownLeft, ArrowDown, RefreshCw, PhoneCall } from "lucide-react";
-import { TOTAL_SENT, WALLET_TRANSACTIONS } from "@/data/walletHistory";
+import { Eye, EyeOff, Plus, TrendingUp, TrendingDown, Zap, Gift, Bell, ArrowUpRight, ArrowDownLeft, ArrowDown, RefreshCw } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
@@ -26,7 +25,6 @@ export default function DashboardPage() {
   const [showAssets, setShowAssets] = useState(false);
   const [hideBalance, setHideBalance] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "transaction">("overview");
-  const [showRestrictionModal, setShowRestrictionModal] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [, navigate] = useLocation();
   const { transactions, holdings, totalInvested } = useTransactions();
@@ -138,7 +136,7 @@ export default function DashboardPage() {
           {/* Quick Action Buttons */}
           <div className="border-t border-white/10 px-5 py-4 grid grid-cols-4 gap-2">
             {[
-              { icon: <ArrowUpRight className="w-5 h-5" />, label: "Send", color: "text-blue-300", bg: "bg-blue-500/20", action: () => setShowRestrictionModal(true) },
+              { icon: <ArrowUpRight className="w-5 h-5" />, label: "Send", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
               { icon: <ArrowDownLeft className="w-5 h-5" />, label: "Receive", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
               { icon: <ArrowDown className="w-5 h-5" />, label: "Withdraw", color: "text-purple-300", bg: "bg-purple-500/20", action: () => setShowWithdraw(true) },
               { icon: <RefreshCw className="w-5 h-5" />, label: "Swap", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
@@ -270,24 +268,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Wallet Activity Alert */}
-            <div className="mx-4 mb-4">
-              <button onClick={() => navigate("/wallet-activity")}
-                className="w-full bg-red-950/30 border border-red-800/40 rounded-2xl p-4 flex items-start gap-3 text-left hover:border-red-600/60 transition-colors">
-                <div className="w-9 h-9 rounded-xl bg-red-900/40 flex items-center justify-center flex-shrink-0">
-                  <AlertTriangle className="w-4 h-4 text-red-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-red-400 text-sm font-bold mb-0.5">Wallet Evidence Record</p>
-                  <p className="text-gray-400 text-xs leading-relaxed">
-                    {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound transfers · <span className="text-red-400 font-semibold">{TOTAL_SENT.toFixed(1)} USDT total drained</span>
-                  </p>
-                  <p className="text-gray-600 text-[11px] mt-1">Jun 9–11, 2026 · Tap to view full evidence</p>
-                </div>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" className="w-4 h-4 flex-shrink-0 mt-0.5"><path d="M9 18l6-6-6-6" /></svg>
-              </button>
-            </div>
-
             {/* Quick Actions */}
             <div className="mx-4 mb-4">
               <p className="text-white font-bold text-base mb-3">Quick Actions</p>
@@ -399,78 +379,6 @@ export default function DashboardPage() {
       {showWelcome && <WelcomeModal onViewAssets={() => { setShowWelcome(false); setShowAssets(true); }} onClose={() => setShowWelcome(false)} />}
       {showAssets && <AssetsModal onProceed={() => setShowAssets(false)} onClose={() => setShowAssets(false)} portfolioValue={displayValue} />}
       {showWithdraw && <WithdrawModal onClose={() => setShowWithdraw(false)} />}
-
-      {/* Transaction Restriction Modal */}
-      {showRestrictionModal && (
-        <div className="fixed inset-0 z-50 flex items-end">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowRestrictionModal(false)} />
-          <div className="relative w-full bg-[#0d1117] rounded-t-3xl border-t border-[#1e2530] p-6 pb-10 animate-slide-up">
-            {/* Close */}
-            <button onClick={() => setShowRestrictionModal(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#1e2530] flex items-center justify-center">
-              <X className="w-4 h-4 text-gray-400" />
-            </button>
-
-            {/* Icon */}
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-amber-900/30 border-2 border-amber-600/40 flex items-center justify-center">
-                <ShieldAlert className="w-8 h-8 text-amber-400" />
-              </div>
-            </div>
-
-            {/* Title */}
-            <h2 className="text-white text-xl font-bold text-center mb-2">Transaction Temporarily Restricted</h2>
-
-            {/* Divider */}
-            <div className="w-12 h-0.5 bg-amber-500/40 mx-auto mb-4 rounded-full" />
-
-            {/* Message */}
-            <p className="text-gray-300 text-sm text-center leading-relaxed mb-4">
-              We detected unusual activity on this wallet, including multiple withdrawal attempts on{" "}
-              <span className="text-amber-400 font-semibold">11/06/2026</span>. As a precaution, part of your balance has been temporarily restricted.
-            </p>
-
-            {/* Breakdown cards */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-green-950/30 border border-green-800/30 rounded-2xl p-3.5">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
-                  <p className="text-green-400 text-[10px] font-bold uppercase tracking-wider">Recovered</p>
-                </div>
-                <p className="text-white text-lg font-black">$300.00</p>
-                <p className="text-gray-500 text-[10px] mt-0.5">USDT · Available</p>
-              </div>
-              <div className="bg-amber-950/30 border border-amber-800/30 rounded-2xl p-3.5">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse" />
-                  <p className="text-amber-400 text-[10px] font-bold uppercase tracking-wider">Restricted</p>
-                </div>
-                <p className="text-white text-lg font-black">$400.00</p>
-                <p className="text-gray-500 text-[10px] mt-0.5">USDT · Pending</p>
-              </div>
-            </div>
-
-            <p className="text-gray-500 text-xs text-center mb-5">
-              The remaining <span className="text-amber-400 font-semibold">$400.00 USDT</span> is held due to the detected unusual activity. To restore full access, please proceed with a service request.
-            </p>
-
-            {/* Buttons */}
-            <button
-              onClick={() => { setShowRestrictionModal(false); navigate("/recovery"); }}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl text-sm transition-colors mb-3 flex items-center justify-center gap-2"
-            >
-              <ShieldAlert className="w-4 h-4" />
-              Request Recovery Assistance
-            </button>
-            <button
-              onClick={() => setShowRestrictionModal(false)}
-              className="w-full bg-[#1e2530] text-gray-300 font-semibold py-4 rounded-2xl text-sm flex items-center justify-center gap-2 hover:bg-[#252d3a] transition-colors"
-            >
-              <PhoneCall className="w-4 h-4" />
-              Contact Support
-            </button>
-          </div>
-        </div>
-      )}
 
       <style>{`
         @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }

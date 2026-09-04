@@ -174,23 +174,6 @@ export default function WithdrawModal({ onClose }: Props) {
               <p className="text-green-400 text-xs mt-1 font-medium">Cleared · Ready to transfer</p>
             </div>
 
-            <div className="bg-amber-900/25 border border-amber-700/50 rounded-xl p-4 mb-4 flex items-start gap-3">
-              <div className="flex-shrink-0 mt-0.5">
-                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                  <circle cx="12" cy="12" r="10" stroke="#f59e0b" strokeWidth="1.5" />
-                  <path d="M12 8v4M12 16h.01" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-amber-300 text-sm font-bold mb-1">Processing Fee Required</p>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  A mandatory compliance processing fee of{" "}
-                  <span className="text-white font-bold">$800.00</span>{" "}
-                  must be satisfied before your funds of $345,560.00 can be released and transferred to your account.
-                </p>
-              </div>
-            </div>
-
             <div className="bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 flex items-center gap-2.5 mb-4">
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${selectedMethod.iconBg}`}>
                 {selectedMethod.icon}

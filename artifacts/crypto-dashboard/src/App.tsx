@@ -12,7 +12,6 @@ import CommunityPage from "@/pages/Community";
 import CryptoAIPage from "@/pages/CryptoAI";
 import CoinDetailPage from "@/pages/CoinDetail";
 import TransactionsPage from "@/pages/Transactions";
-import WalletActivityPage from "@/pages/WalletActivity";
 import RecoveryPage from "@/pages/Recovery";
 
 const queryClient = new QueryClient({
@@ -39,7 +38,6 @@ function Router() {
       <Route path="/crypto-ai" component={() => <ProtectedRoute component={CryptoAIPage} />} />
       <Route path="/coin/:id" component={() => <ProtectedRoute component={CoinDetailPage} />} />
       <Route path="/transactions" component={() => <ProtectedRoute component={TransactionsPage} />} />
-      <Route path="/wallet-activity" component={() => <ProtectedRoute component={WalletActivityPage} />} />
       <Route path="/recovery" component={() => <ProtectedRoute component={RecoveryPage} />} />
       <Route component={LoginPage} />
     </Switch>

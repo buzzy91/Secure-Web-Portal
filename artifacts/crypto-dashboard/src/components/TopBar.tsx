@@ -60,7 +60,6 @@ export default function TopBar() {
                 { label: "Community", path: "/community" },
                 { label: "Crypto AI", path: "/crypto-ai" },
                 { label: "Transactions", path: "/transactions" },
-                { label: "Wallet Activity", path: "/wallet-activity", alert: true },
               ].map((item) => (
                 <button key={item.path} onClick={() => { navigate(item.path); setMenuOpen(false); }}
                   className="w-full flex items-center justify-between py-4 border-b border-[#1e2530]">
