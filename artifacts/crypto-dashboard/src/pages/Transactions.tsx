@@ -118,7 +118,7 @@ export default function TransactionsPage() {
                     {pendingDeposit.completed ? "COMPLETED" : "PENDING"}
                   </span>
                 </div>
-                <p className="text-gray-400 text-xs font-semibold">SIM TRANSACTION</p>
+                <p className="text-gray-500 text-[10px]">sim transaction</p>
               </div>
               <p className="text-white text-sm font-black">$345,560.00</p>
             </div>
