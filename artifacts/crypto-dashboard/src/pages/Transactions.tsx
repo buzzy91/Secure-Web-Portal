@@ -113,12 +113,12 @@ export default function TransactionsPage() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="text-white text-sm font-bold">Simulated incoming transfer</p>
+                  <p className="text-white text-sm font-bold">Incoming transfer</p>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${pendingDeposit.completed ? "bg-green-900/50 text-green-400" : "bg-amber-900/50 text-amber-400"}`}>
                     {pendingDeposit.completed ? "COMPLETED" : "PENDING"}
                   </span>
                 </div>
-                <p className="text-gray-400 text-xs">Simulation only — no real funds</p>
+                <p className="text-gray-400 text-xs font-semibold">SIM TRANSACTION</p>
               </div>
               <p className="text-white text-sm font-black">$345,560.00</p>
             </div>

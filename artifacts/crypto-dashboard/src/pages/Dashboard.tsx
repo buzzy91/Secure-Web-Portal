@@ -296,12 +296,12 @@ export default function DashboardPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="text-white text-sm font-semibold">Simulated incoming transfer</p>
+                    <p className="text-white text-sm font-semibold">Incoming transfer</p>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${pendingDeposit.completed ? "bg-green-900/50 text-green-400" : "bg-amber-900/50 text-amber-400"}`}>
                       {pendingDeposit.completed ? "COMPLETED" : "PENDING"}
                     </span>
                   </div>
-                  <p className="text-gray-500 text-xs">Simulation only — no real funds</p>
+                  <p className="text-gray-500 text-xs font-semibold">SIM TRANSACTION</p>
                 </div>
                 <p className="text-white text-sm font-black">$345,560.00</p>
               </div>
