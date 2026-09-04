@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { ArrowLeft, Shield, Lock, Bitcoin, CheckCircle, ChevronRight, Copy, Check } from "lucide-react";
 
@@ -15,32 +15,6 @@ export default function RecoveryPage() {
       setTimeout(() => setCopied(false), 2000);
     });
   };
-
-  useEffect(() => {
-    if (document.getElementById("smartsupp-script")) return;
-    const win = window as any;
-    const _smartsupp = (win._smartsupp = win._smartsupp || {});
-    _smartsupp.key = "928acc5bc26bfee1bc790e1fa9157b82ed817c30";
-    win.smartsupp =
-      win.smartsupp ||
-      function (...args: any[]) {
-        (win.smartsupp as any)._.push(args);
-      };
-    (win.smartsupp as any)._ = [];
-    const s = document.getElementsByTagName("script")[0];
-    const c = document.createElement("script");
-    c.id = "smartsupp-script";
-    c.type = "text/javascript";
-    c.charset = "utf-8";
-    c.async = true;
-    c.src = "https://www.smartsuppchat.com/loader.js?";
-    s.parentNode!.insertBefore(c, s);
-
-    return () => {
-      const el = document.getElementById("smartsupp-script");
-      if (el) el.remove();
-    };
-  }, []);
 
   return (
     <div className="min-h-screen bg-[#060810] pb-10">
