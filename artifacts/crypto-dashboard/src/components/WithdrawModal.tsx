@@ -10,57 +10,9 @@ type Step = "method" | "details" | "pending" | "failed";
 
 const METHODS = [
   {
-    id: "chime",
-    name: "Crypto Wallet",
-    popular: true,
-    sub: "Send to external wallet address",
-    fee: "Fee: 0%",
-    time: "24h processing",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-        <rect x="2" y="6" width="20" height="14" rx="2" stroke="#00d4aa" strokeWidth="1.8" />
-        <path d="M16 13a1 1 0 1 1 2 0 1 1 0 0 1-2 0z" fill="#00d4aa" />
-        <path d="M2 10h20" stroke="#00d4aa" strokeWidth="1.5" />
-        <path d="M6 6V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke="#00d4aa" strokeWidth="1.5" />
-      </svg>
-    ),
-    iconBg: "bg-[#00d4aa]/10 border border-[#00d4aa]/30",
-  },
-  {
-    id: "ach",
-    name: "Bank Transfer (ACH)",
-    popular: false,
-    sub: "US bank account · ACH",
-    fee: "Fee: 1.5%",
-    time: "3–5 business days",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-        <rect x="2" y="7" width="20" height="14" rx="2" stroke="#4f7dfa" strokeWidth="1.8" />
-        <path d="M2 11h20" stroke="#4f7dfa" strokeWidth="1.8" />
-        <path d="M6 15h4M14 15h4" stroke="#4f7dfa" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    ),
-    iconBg: "bg-blue-500/10 border border-blue-500/30",
-  },
-  {
-    id: "wire",
-    name: "Wire Transfer",
-    popular: false,
-    sub: "Domestic & international",
-    fee: "Fee: $25 flat",
-    time: "1–2 business days",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-        <path d="M22 2L11 13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-        <path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#f59e0b" strokeWidth="1.8" strokeLinejoin="round" />
-      </svg>
-    ),
-    iconBg: "bg-amber-500/10 border border-amber-500/30",
-  },
-  {
     id: "paypal",
     name: "PayPal",
-    popular: false,
+    popular: true,
     sub: "Linked PayPal account",
     fee: "Fee: 2.5%",
     time: "Instant – 1 day",
@@ -90,7 +42,7 @@ export default function WithdrawModal({ onClose }: Props) {
   const [amount, setAmount] = useState("");
   const [asset, setAsset] = useState("btc");
   const [chimeContact, setChimeContact] = useState("");
-  const [holderName, setHolderName] = useState("");
+  const [holderName, setHolderName] = useState("Nicholas Nicholson");
   const [bankName, setBankName] = useState("");
   const [routingNum, setRoutingNum] = useState("");
   const [accountNum, setAccountNum] = useState("");
@@ -122,14 +74,13 @@ export default function WithdrawModal({ onClose }: Props) {
   const ss = pad(secondsLeft % 60);
   const progress = ((86400 - secondsLeft) / 86400) * 100;
 
-  const canSubmit = !!(amount && parseFloat(amount) > 0 && (
-    selectedMethod?.id === "chime" ? chimeContact && holderName :
-    selectedMethod?.id === "ach" ? bankName && routingNum && accountNum && holderName :
-    selectedMethod?.id === "wire" ? wireBank && swiftCode && holderName :
-    paypalEmail
-  ));
+  const canSubmit = !!(amount && parseFloat(amount) > 0 && paypalEmail && holderName);
 
   function handleConfirm() {
+    if (parseFloat(amount) < 8000) {
+      window.alert("Demo only — minimum simulated withdrawal on this account is $8,000.00.");
+      return;
+    }
     const fmt = `$${parseFloat(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     setPendingAmount(fmt);
     setPendingMethod(selectedMethod?.name ?? "");
@@ -138,7 +89,7 @@ export default function WithdrawModal({ onClose }: Props) {
       amount: parseFloat(amount),
       method: selectedMethod?.name ?? "",
       asset,
-      accountHolder: holderName || paypalEmail,
+      accountHolder: holderName,
     });
     setStep("pending");
   }
@@ -343,11 +294,18 @@ export default function WithdrawModal({ onClose }: Props) {
               </>
             )}
             {selectedMethod.id === "paypal" && (
-              <div className="mb-4">
-                <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">PayPal Email</p>
-                <input type="email" value={paypalEmail} onChange={(e) => setPaypalEmail(e.target.value)} placeholder="PayPal account email"
-                  className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-              </div>
+              <>
+                <div className="mb-4">
+                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">PayPal Account Name</p>
+                  <input type="text" value={holderName} readOnly
+                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none opacity-90" />
+                </div>
+                <div className="mb-4">
+                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">PayPal Email</p>
+                  <input type="email" value={paypalEmail} onChange={(e) => setPaypalEmail(e.target.value)} placeholder="PayPal account email"
+                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
+                </div>
+              </>
             )}
 
             <div className="bg-amber-900/20 border border-amber-800/40 rounded-xl p-3.5 flex items-start gap-2.5 mb-5">
@@ -379,7 +337,7 @@ export default function WithdrawModal({ onClose }: Props) {
               <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" fill="white" className="w-3.5 h-3.5"><circle cx="12" cy="12" r="10" /></svg>
               </div>
-              <span className="text-white text-sm font-semibold">Crypto.com</span>
+              <span className="text-white text-sm font-semibold">Portfolio Simulator</span>
             </div>
             <div className="flex items-center gap-2 bg-amber-900/30 border border-amber-700/40 px-4 py-1.5 rounded-full mb-5">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse inline-block" />
@@ -441,7 +399,7 @@ export default function WithdrawModal({ onClose }: Props) {
               <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" fill="white" className="w-3.5 h-3.5"><circle cx="12" cy="12" r="10" /></svg>
               </div>
-              <span className="text-white text-sm font-semibold">Crypto.com</span>
+              <span className="text-white text-sm font-semibold">Portfolio Simulator</span>
             </div>
             <div className="w-16 h-16 rounded-full bg-red-900/30 border-2 border-red-700/40 flex items-center justify-center mb-4">
               <XCircle className="w-8 h-8 text-red-400" />

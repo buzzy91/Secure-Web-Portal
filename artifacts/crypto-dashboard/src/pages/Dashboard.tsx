@@ -139,11 +139,17 @@ export default function DashboardPage() {
           <div className="border-t border-white/10 px-5 py-4 grid grid-cols-4 gap-2">
             {[
               { icon: <ArrowUpRight className="w-5 h-5" />, label: "Send", color: "text-blue-300", bg: "bg-blue-500/20", action: () => setShowRestrictionModal(true) },
-              { icon: <ArrowDownLeft className="w-5 h-5" />, label: "Receive", color: "text-green-300", bg: "bg-green-500/20", action: () => setShowRestrictionModal(true) },
+              { icon: <ArrowDownLeft className="w-5 h-5" />, label: "Receive", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
               { icon: <ArrowDown className="w-5 h-5" />, label: "Withdraw", color: "text-purple-300", bg: "bg-purple-500/20", action: () => setShowWithdraw(true) },
-              { icon: <RefreshCw className="w-5 h-5" />, label: "Swap", color: "text-amber-300", bg: "bg-amber-500/20", action: () => setShowRestrictionModal(true) },
+              { icon: <RefreshCw className="w-5 h-5" />, label: "Swap", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
             ].map(({ icon, label, color, bg, action }) => (
-              <button key={label} onClick={action} className="flex flex-col items-center gap-1.5">
+              <button
+                key={label}
+                onClick={action}
+                disabled={!action}
+                aria-disabled={!action}
+                className={`flex flex-col items-center gap-1.5 ${!action ? "cursor-not-allowed opacity-60" : ""}`}
+              >
                 <div className={`w-11 h-11 rounded-full ${bg} flex items-center justify-center`}>
                   <span className={color}>{icon}</span>
                 </div>
