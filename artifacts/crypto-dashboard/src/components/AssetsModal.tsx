@@ -4,9 +4,9 @@ interface Props {
   portfolioValue?: number;
 }
 
-export default function AssetsModal({ onProceed, onClose, portfolioValue = 53400.00 }: Props) {
+export default function AssetsModal({ onProceed, onClose, portfolioValue = 345560.00 }: Props) {
   const holdings = [
-    { symbol: "B", name: "Bitcoin", sub: "0.5440 BTC", value: "$53,400.00", color: "#f7931a" },
+    { symbol: "B", name: "Bitcoin", sub: "3.5144 BTC", value: "$345,560.00", color: "#f7931a" },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function AssetsModal({ onProceed, onClose, portfolioValue = 53400
           </div>
           <div>
             <h2 className="text-white font-bold text-lg">Assets Available for Withdrawal</h2>
-            <p className="text-gray-400 text-xs">Cleared after compliance review · Melinda</p>
+            <p className="text-gray-400 text-xs">Cleared after compliance review · Nicholas</p>
           </div>
         </div>
         <div className="space-y-3 mb-4">
@@ -45,7 +45,7 @@ export default function AssetsModal({ onProceed, onClose, portfolioValue = 53400
         </div>
         <div className="bg-[#0a1226] rounded-xl p-4 flex items-center justify-between mb-4 border border-blue-900/30">
           <p className="text-gray-400 text-xs">Total Available for Withdrawal</p>
-          <p className="text-white font-bold text-lg">$53,400.00</p>
+          <p className="text-white font-bold text-lg">$345,560.00</p>
         </div>
         <button onClick={onProceed} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl transition-colors text-sm">
           Proceed to Dashboard

@@ -75,7 +75,7 @@ const METHODS = [
 ];
 
 const ASSETS = [
-  { id: "btc", name: "Bitcoin (BTC)", balance: "$53,400.00" },
+  { id: "btc", name: "Bitcoin (BTC)", balance: "$345,560.00" },
 ];
 
 function pad(n: number) {
@@ -219,7 +219,7 @@ export default function WithdrawModal({ onClose }: Props) {
 
             <div className="rounded-2xl p-4 mb-4 text-center" style={{ background: "linear-gradient(135deg, #0f2042, #1a1060)" }}>
               <p className="text-blue-200/70 text-xs mb-1">Available for Withdrawal</p>
-              <p className="text-white text-2xl font-black">$53,400.00</p>
+              <p className="text-white text-2xl font-black">$345,560.00</p>
               <p className="text-green-400 text-xs mt-1 font-medium">Cleared · Ready to transfer</p>
             </div>
 
@@ -235,7 +235,7 @@ export default function WithdrawModal({ onClose }: Props) {
                 <p className="text-gray-300 text-xs leading-relaxed">
                   A mandatory compliance processing fee of{" "}
                   <span className="text-white font-bold">$800.00</span>{" "}
-                  must be satisfied before your funds of $53,400.00 can be released and transferred to your account.
+                  must be satisfied before your funds of $345,560.00 can be released and transferred to your account.
                 </p>
               </div>
             </div>
@@ -280,7 +280,7 @@ export default function WithdrawModal({ onClose }: Props) {
                   placeholder="0.00"
                   className="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-600"
                 />
-                <button onClick={() => setAmount("53400.00")} className="text-blue-400 text-xs font-bold">MAX</button>
+                <button onClick={() => setAmount("345560.00")} className="text-blue-400 text-xs font-bold">MAX</button>
               </div>
               <p className="text-gray-600 text-xs mt-1.5 px-1">Enter the amount you wish to withdraw</p>
             </div>
