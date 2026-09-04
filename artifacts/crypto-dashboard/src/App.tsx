@@ -51,9 +51,6 @@ function App() {
         <TransactionProvider>
           <WithdrawalProvider>
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-              <div className="fixed top-0 inset-x-0 z-[100] bg-amber-500 text-black text-center text-[10px] sm:text-xs font-bold px-3 py-1.5">
-                DEMO SIMULATOR — No real funds · Not affiliated with Crypto.com
-              </div>
               <Router />
             </WouterRouter>
             <Toaster position="top-center" theme="dark" richColors />

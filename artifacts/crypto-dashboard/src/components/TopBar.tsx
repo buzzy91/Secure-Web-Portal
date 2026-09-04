@@ -30,7 +30,7 @@ export default function TopBar() {
           <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4"><path d="M12 1L3 5.5v6.5c0 5 3.8 9.7 9 10.9 5.2-1.2 9-5.9 9-10.9V5.5L12 1z" /></svg>
           </div>
-          <span className="font-bold text-white text-base">Crypto.com</span>
+          <span className="font-bold text-white text-base">Recover.com</span>
           <div className="flex items-center gap-1 ml-1">
             <span className={`text-xs ${isUp ? "text-green-400" : "text-red-400"}`}>{isUp ? "▲" : "▼"} {Math.abs(pct).toFixed(2)}%</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${isUp ? "bg-green-900/40 text-green-400" : "bg-red-900/40 text-red-400"}`}>LIVE</span>
@@ -48,7 +48,7 @@ export default function TopBar() {
                 <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center">
                   <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4"><path d="M12 1L3 5.5v6.5c0 5 3.8 9.7 9 10.9 5.2-1.2 9-5.9 9-10.9V5.5L12 1z" /></svg>
                 </div>
-                <span className="font-bold text-white">Crypto.com</span>
+                <span className="font-bold text-white">Recover.com</span>
               </div>
               <button onClick={() => setMenuOpen(false)} className="text-gray-400 p-1"><X className="w-5 h-5" /></button>
             </div>

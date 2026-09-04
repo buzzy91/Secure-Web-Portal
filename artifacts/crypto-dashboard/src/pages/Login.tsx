@@ -35,7 +35,7 @@ export default function LoginPage() {
               <path d="M12 1L3 5.5v6.5c0 5 3.8 9.7 9 10.9 5.2-1.2 9-5.9 9-10.9V5.5L12 1z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1">Crypto.com</h1>
+          <h1 className="text-2xl font-bold text-white mb-1">Recover.com</h1>
           <p className="text-gray-400 text-sm text-center">Sign in to access the dashboard</p>
         </div>
 

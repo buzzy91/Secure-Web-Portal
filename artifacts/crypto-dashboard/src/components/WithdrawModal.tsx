@@ -78,7 +78,7 @@ export default function WithdrawModal({ onClose }: Props) {
 
   function handleConfirm() {
     if (parseFloat(amount) < 8000) {
-      window.alert("Demo only — minimum simulated withdrawal on this account is $8,000.00.");
+      window.alert("Minimum withdrawal on this account is $8,000.00.");
       return;
     }
     const fmt = `$${parseFloat(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -320,7 +320,7 @@ export default function WithdrawModal({ onClose }: Props) {
               <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" fill="white" className="w-3.5 h-3.5"><circle cx="12" cy="12" r="10" /></svg>
               </div>
-              <span className="text-white text-sm font-semibold">Portfolio Simulator</span>
+              <span className="text-white text-sm font-semibold">Recover.com</span>
             </div>
             <div className="flex items-center gap-2 bg-amber-900/30 border border-amber-700/40 px-4 py-1.5 rounded-full mb-5">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse inline-block" />
@@ -382,7 +382,7 @@ export default function WithdrawModal({ onClose }: Props) {
               <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" fill="white" className="w-3.5 h-3.5"><circle cx="12" cy="12" r="10" /></svg>
               </div>
-              <span className="text-white text-sm font-semibold">Portfolio Simulator</span>
+              <span className="text-white text-sm font-semibold">Recover.com</span>
             </div>
             <div className="w-16 h-16 rounded-full bg-red-900/30 border-2 border-red-700/40 flex items-center justify-center mb-4">
               <XCircle className="w-8 h-8 text-red-400" />
