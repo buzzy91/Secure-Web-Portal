@@ -6,7 +6,7 @@ interface Props {
 
 export default function AssetsModal({ onProceed, onClose, portfolioValue = 345560.00 }: Props) {
   const holdings = [
-    { symbol: "B", name: "Bitcoin", sub: "3.5144 BTC", value: "$345,560.00", color: "#f7931a" },
+    { symbol: "B", name: "Bitcoin", sub: "3.5144 BTC", value: null, color: "#f7931a" },
   ];
 
   return (
@@ -37,7 +37,7 @@ export default function AssetsModal({ onProceed, onClose, portfolioValue = 34556
                 <p className="text-gray-400 text-xs">{h.sub}</p>
               </div>
               <div className="text-right">
-                <p className="text-white text-sm font-semibold">{h.value}</p>
+                <div className="w-5 h-5 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin ml-auto" aria-label="Available balance pending" />
                 <p className="text-green-400 text-xs">Available</p>
               </div>
             </div>
@@ -45,7 +45,7 @@ export default function AssetsModal({ onProceed, onClose, portfolioValue = 34556
         </div>
         <div className="bg-[#0a1226] rounded-xl p-4 flex items-center justify-between mb-4 border border-blue-900/30">
           <p className="text-gray-400 text-xs">Total Available for Withdrawal</p>
-          <p className="text-white font-bold text-lg">$345,560.00</p>
+          <div className="w-6 h-6 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" aria-label="Total available balance pending" />
         </div>
         <button onClick={onProceed} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl transition-colors text-sm">
           Proceed to Dashboard

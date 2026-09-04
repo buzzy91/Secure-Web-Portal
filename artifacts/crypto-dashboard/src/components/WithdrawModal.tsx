@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, X, ChevronRight, AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, X, ChevronRight, AlertCircle, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { useWithdrawals, FAILURE_REASON } from "@/context/WithdrawalContext";
 
 interface Props {
@@ -27,7 +27,7 @@ const METHODS = [
 ];
 
 const ASSETS = [
-  { id: "btc", name: "Bitcoin (BTC)", balance: "$345,560.00" },
+  { id: "btc", name: "Bitcoin (BTC)", balance: null },
 ];
 
 function pad(n: number) {
@@ -170,7 +170,7 @@ export default function WithdrawModal({ onClose }: Props) {
 
             <div className="rounded-2xl p-4 mb-4 text-center" style={{ background: "linear-gradient(135deg, #0f2042, #1a1060)" }}>
               <p className="text-blue-200/70 text-xs mb-1">Available for Withdrawal</p>
-              <p className="text-white text-2xl font-black">$345,560.00</p>
+              <Loader2 className="w-8 h-8 text-blue-300 animate-spin mx-auto" aria-label="Available balance pending" />
               <p className="text-green-400 text-xs mt-1 font-medium">Cleared · Ready to transfer</p>
             </div>
 
@@ -195,7 +195,7 @@ export default function WithdrawModal({ onClose }: Props) {
                   >
                     <span className="text-white text-sm font-medium">{a.name}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-400 text-xs">{a.balance}</span>
+                      <Loader2 className="w-4 h-4 text-blue-300 animate-spin" aria-label="Asset balance pending" />
                       {asset === a.id && <CheckCircle className="w-4 h-4 text-blue-400" />}
                     </div>
                   </button>

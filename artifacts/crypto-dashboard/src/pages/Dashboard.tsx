@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Eye, EyeOff, Plus, TrendingUp, TrendingDown, Zap, Gift, Bell, ArrowUpRight, ArrowDownLeft, ArrowDown, RefreshCw } from "lucide-react";
+import { Eye, EyeOff, Plus, TrendingUp, TrendingDown, Zap, Gift, Bell, ArrowUpRight, ArrowDownLeft, ArrowDown, RefreshCw, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
@@ -98,9 +98,9 @@ export default function DashboardPage() {
             </div>
 
             <p className="text-blue-200/70 text-xs mb-1 uppercase tracking-wider">Total Balance</p>
-            <p className="text-white text-4xl font-bold tracking-tight mb-0.5">
-              {hideBalance ? "••••••" : "$345,560.00"}
-            </p>
+            <div className="h-11 flex items-center mb-0.5" aria-label="Total balance pending">
+              <Loader2 className="w-8 h-8 text-blue-300 animate-spin" />
+            </div>
             <p className="text-blue-300/70 text-sm mb-4">USDT equivalent</p>
 
             <div className="flex items-center gap-3 mb-5">
@@ -173,7 +173,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-3 gap-3 mx-4 mt-3">
           {[
             { label: "Portfolio", value: `$${displayValue.toFixed(0)}`, sub: "Total", color: "text-white" },
-            { label: "Invested", value: totalInvested > 0 ? fmt(totalInvested) : "$345,560", sub: "All time", color: "text-white" },
+            { label: "Invested", value: totalInvested > 0 ? fmt(totalInvested) : <Loader2 className="w-5 h-5 animate-spin" />, sub: "All time", color: "text-white" },
             { label: "Assets", value: String(Math.max(portfolioCoins.length, 1)), sub: "Holdings", color: "text-white" },
           ].map((s) => (
             <div key={s.label} className="bg-[#0d1117] rounded-2xl p-3 border border-[#1e2530]">
@@ -242,7 +242,7 @@ export default function DashboardPage() {
                   );
                 }) : (
                   [
-                    { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "3.5144", value: "$345,560.00", change: "+1.31%", up: true, color: "#f7931a", letter: "B", alloc: 100 },
+                    { id: "bitcoin", name: "Bitcoin", symbol: "BTC", amount: "3.5144", value: <Loader2 className="w-5 h-5 animate-spin ml-auto" />, change: "+1.31%", up: true, color: "#f7931a", letter: "B", alloc: 100 },
                   ].map((a) => (
                     <button key={a.id} onClick={() => navigate(`/coin/${a.id}`)}
                       className="w-full bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3 text-left hover:border-blue-600/30 transition-colors">
