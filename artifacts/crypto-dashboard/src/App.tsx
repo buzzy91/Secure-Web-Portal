@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { TransactionProvider } from "@/context/TransactionContext";
 import { WithdrawalProvider } from "@/context/WithdrawalContext";
+import { PendingDepositProvider } from "@/context/PendingDepositContext";
 import { Toaster } from "sonner";
 import LoginPage from "@/pages/Login";
 import DashboardPage from "@/pages/Dashboard";
@@ -49,12 +50,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TransactionProvider>
-          <WithdrawalProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-              <Router />
-            </WouterRouter>
-            <Toaster position="top-center" theme="dark" richColors />
-          </WithdrawalProvider>
+          <PendingDepositProvider>
+            <WithdrawalProvider>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                <Router />
+              </WouterRouter>
+              <Toaster position="top-center" theme="dark" richColors />
+            </WithdrawalProvider>
+          </PendingDepositProvider>
         </TransactionProvider>
       </AuthProvider>
     </QueryClientProvider>

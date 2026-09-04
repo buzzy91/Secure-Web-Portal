@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, X, ChevronRight, AlertCircle, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, X, ChevronRight, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import { useWithdrawals, FAILURE_REASON } from "@/context/WithdrawalContext";
+import { usePendingDeposit } from "@/context/PendingDepositContext";
 
 interface Props {
   onClose: () => void;
@@ -36,6 +37,8 @@ function pad(n: number) {
 
 export default function WithdrawModal({ onClose }: Props) {
   const { addWithdrawal } = useWithdrawals();
+  const { amount: depositAmount, completed: depositCompleted } = usePendingDeposit();
+  const availableBalance = depositCompleted ? depositAmount : 0;
 
   const [step, setStep] = useState<Step>("method");
   const [selectedMethod, setSelectedMethod] = useState<(typeof METHODS)[0] | null>(null);
@@ -170,8 +173,10 @@ export default function WithdrawModal({ onClose }: Props) {
 
             <div className="rounded-2xl p-4 mb-4 text-center" style={{ background: "linear-gradient(135deg, #0f2042, #1a1060)" }}>
               <p className="text-blue-200/70 text-xs mb-1">Available for Withdrawal</p>
-              <Loader2 className="w-8 h-8 text-blue-300 animate-spin mx-auto" aria-label="Available balance pending" />
-              <p className="text-green-400 text-xs mt-1 font-medium">Cleared · Ready to transfer</p>
+              <p className="text-white text-2xl font-black">${availableBalance.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
+              <p className={`text-xs mt-1 font-medium ${depositCompleted ? "text-green-400" : "text-amber-400"}`}>
+                {depositCompleted ? "Cleared · Ready to transfer" : "Pending confirmation"}
+              </p>
             </div>
 
             <div className="bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 flex items-center gap-2.5 mb-4">
@@ -195,7 +200,7 @@ export default function WithdrawModal({ onClose }: Props) {
                   >
                     <span className="text-white text-sm font-medium">{a.name}</span>
                     <div className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 text-blue-300 animate-spin" aria-label="Asset balance pending" />
+                      <span className="text-gray-400 text-xs">${availableBalance.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                       {asset === a.id && <CheckCircle className="w-4 h-4 text-blue-400" />}
                     </div>
                   </button>
@@ -214,7 +219,7 @@ export default function WithdrawModal({ onClose }: Props) {
                   placeholder="0.00"
                   className="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-600"
                 />
-                <button onClick={() => setAmount("345560.00")} className="text-blue-400 text-xs font-bold">MAX</button>
+                <button onClick={() => setAmount(availableBalance.toFixed(2))} className="text-blue-400 text-xs font-bold">MAX</button>
               </div>
               <p className="text-gray-600 text-xs mt-1.5 px-1">Enter the amount you wish to withdraw</p>
             </div>

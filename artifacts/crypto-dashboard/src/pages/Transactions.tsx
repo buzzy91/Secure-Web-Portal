@@ -3,10 +3,14 @@ import { ArrowLeft, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useTransactions } from "@/context/TransactionContext";
 import { getMarkets, fmt } from "@/services/coingecko";
+import { usePendingDeposit } from "@/context/PendingDepositContext";
 
 export default function TransactionsPage() {
   const [, navigate] = useLocation();
   const { transactions, holdings } = useTransactions();
+  const pendingDeposit = usePendingDeposit();
+  const hours = Math.floor(pendingDeposit.remainingMs / 3600000);
+  const minutes = Math.floor((pendingDeposit.remainingMs % 3600000) / 60000);
 
   const { data: markets } = useQuery({
     queryKey: ["markets-full"],
@@ -105,11 +109,35 @@ export default function TransactionsPage() {
         {/* Transaction log */}
         <div>
           <p className="text-white font-semibold mb-3">Transaction Log</p>
-          {transactions.length === 0 ? (
-            <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-8 text-center">
-              <p className="text-gray-400 text-sm">No transactions yet. Buy coins from the Markets tab.</p>
+          <div className={`rounded-2xl p-4 border mb-3 ${pendingDeposit.completed ? "bg-green-950/20 border-green-800/40" : "bg-amber-950/20 border-amber-800/40"}`}>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-white text-sm font-bold">Simulated incoming transfer</p>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${pendingDeposit.completed ? "bg-green-900/50 text-green-400" : "bg-amber-900/50 text-amber-400"}`}>
+                    {pendingDeposit.completed ? "COMPLETED" : "PENDING"}
+                  </span>
+                </div>
+                <p className="text-gray-400 text-xs">Simulation only — no real funds</p>
+              </div>
+              <p className="text-white text-sm font-black">$345,560.00</p>
             </div>
-          ) : (
+            <div className="mt-4">
+              <div className="flex justify-between text-xs mb-2">
+                <span className="text-gray-400">Network confirmations</span>
+                <span className={pendingDeposit.completed ? "text-green-400 font-bold" : "text-amber-400 font-bold"}>{pendingDeposit.confirmations}/5</span>
+              </div>
+              <div className="grid grid-cols-5 gap-1.5">
+                {[1, 2, 3, 4, 5].map((confirmation) => (
+                  <div key={confirmation} className={`h-1.5 rounded-full ${confirmation <= pendingDeposit.confirmations ? "bg-green-400" : "bg-[#27303d]"}`} />
+                ))}
+              </div>
+              <p className="text-gray-500 text-[11px] mt-2">
+                {pendingDeposit.completed ? "Confirmed and added to available balance" : `Estimated completion in ${hours}h ${minutes}m`}
+              </p>
+            </div>
+          </div>
+          {transactions.length > 0 && (
             <div className="space-y-3">
               {transactions.map((tx) => (
                 <div key={tx.id} className="bg-[#0d1117] rounded-2xl p-4 border border-[#1e2530] flex items-center gap-3">

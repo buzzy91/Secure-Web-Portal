@@ -11,6 +11,7 @@ import PerformanceChart from "@/components/PerformanceChart";
 import { getMarkets, fmt, fmtPct } from "@/services/coingecko";
 import { useTransactions } from "@/context/TransactionContext";
 import { useWithdrawals } from "@/context/WithdrawalContext";
+import { usePendingDeposit } from "@/context/PendingDepositContext";
 
 const PORTFOLIO_COINS = ["bitcoin"];
 const PORTFOLIO_AMOUNTS: Record<string, number> = {
@@ -29,6 +30,10 @@ export default function DashboardPage() {
   const [, navigate] = useLocation();
   const { transactions, holdings, totalInvested } = useTransactions();
   const { withdrawals, clearAll: clearWithdrawals } = useWithdrawals();
+  const pendingDeposit = usePendingDeposit();
+  const availableBalance = pendingDeposit.completed ? pendingDeposit.amount : 0;
+  const depositHours = Math.floor(pendingDeposit.remainingMs / 3600000);
+  const depositMinutes = Math.floor((pendingDeposit.remainingMs % 3600000) / 60000);
 
   const { data: markets } = useQuery({
     queryKey: ["markets-portfolio"],
@@ -98,9 +103,9 @@ export default function DashboardPage() {
             </div>
 
             <p className="text-blue-200/70 text-xs mb-1 uppercase tracking-wider">Total Balance</p>
-            <div className="h-11 flex items-center mb-0.5" aria-label="Total balance pending">
-              <Loader2 className="w-8 h-8 text-blue-300 animate-spin" />
-            </div>
+            <p className="text-white text-4xl font-bold tracking-tight mb-0.5">
+              ${availableBalance.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            </p>
             <p className="text-blue-300/70 text-sm mb-4">USDT equivalent</p>
 
             <div className="flex items-center gap-3 mb-5">
@@ -172,8 +177,8 @@ export default function DashboardPage() {
         {/* Quick stats row */}
         <div className="grid grid-cols-3 gap-3 mx-4 mt-3">
           {[
-            { label: "Portfolio", value: `$${displayValue.toFixed(0)}`, sub: "Total", color: "text-white" },
-            { label: "Invested", value: totalInvested > 0 ? fmt(totalInvested) : <Loader2 className="w-5 h-5 animate-spin" />, sub: "All time", color: "text-white" },
+            { label: "Portfolio", value: `$${availableBalance.toLocaleString("en-US", { maximumFractionDigits: 0 })}`, sub: "Total", color: "text-white" },
+            { label: "Invested", value: `$${availableBalance.toLocaleString("en-US", { maximumFractionDigits: 0 })}`, sub: "All time", color: "text-white" },
             { label: "Assets", value: String(Math.max(portfolioCoins.length, 1)), sub: "Holdings", color: "text-white" },
           ].map((s) => (
             <div key={s.label} className="bg-[#0d1117] rounded-2xl p-3 border border-[#1e2530]">
@@ -287,6 +292,35 @@ export default function DashboardPage() {
           </>
         ) : (
           <div className="mx-4 mt-4 mb-4 space-y-2">
+            <div className={`rounded-2xl border p-4 ${pendingDeposit.completed ? "bg-green-950/20 border-green-800/40" : "bg-amber-950/20 border-amber-800/40"}`}>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-white text-sm font-semibold">Simulated incoming transfer</p>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${pendingDeposit.completed ? "bg-green-900/50 text-green-400" : "bg-amber-900/50 text-amber-400"}`}>
+                      {pendingDeposit.completed ? "COMPLETED" : "PENDING"}
+                    </span>
+                  </div>
+                  <p className="text-gray-500 text-xs">Simulation only — no real funds</p>
+                </div>
+                <p className="text-white text-sm font-black">$345,560.00</p>
+              </div>
+              <div className="mt-3">
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span className="text-gray-400">Confirmations</span>
+                  <span className={pendingDeposit.completed ? "text-green-400 font-bold" : "text-amber-400 font-bold"}>{pendingDeposit.confirmations}/5</span>
+                </div>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {[1, 2, 3, 4, 5].map((confirmation) => (
+                    <div key={confirmation} className={`h-1.5 rounded-full ${confirmation <= pendingDeposit.confirmations ? "bg-green-400" : "bg-[#27303d]"}`} />
+                  ))}
+                </div>
+                <p className="text-gray-500 text-[11px] mt-2">
+                  {pendingDeposit.completed ? "Confirmed and added to available balance" : `Estimated completion in ${depositHours}h ${depositMinutes}m`}
+                </p>
+              </div>
+            </div>
+
             {/* Withdrawal transactions */}
             {withdrawals.map((w) => {
               const isFailed = w.status === "failed";
@@ -344,17 +378,6 @@ export default function DashboardPage() {
                 </div>
               </div>
             ))}
-
-            {withdrawals.length === 0 && transactions.length === 0 && (
-              <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-10 text-center">
-                <div className="w-14 h-14 rounded-full bg-[#1e2530] flex items-center justify-center mx-auto mb-4">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="1.5" className="w-7 h-7"><path d="M12 2v10m0 0-3-3m3 3 3-3M6 17l-2 2 2 2M18 17l2 2-2 2M3 19h18" /></svg>
-                </div>
-                <p className="text-white text-sm font-semibold mb-1">No transactions yet</p>
-                <p className="text-gray-500 text-xs mb-4">Buy or receive crypto to see history here</p>
-                <button onClick={() => navigate("/markets")} className="bg-blue-600 text-white text-sm px-5 py-2.5 rounded-xl font-semibold">Browse Markets</button>
-              </div>
-            )}
 
             {/* Clear all */}
             {withdrawals.length > 0 && (
