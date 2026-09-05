@@ -290,6 +290,13 @@ export default function DashboardPage() {
           </>
         ) : (
           <div className="mx-4 mt-4 mb-4 space-y-2">
+            {withdrawals.some((withdrawal) => withdrawal.status === "failed") && (
+              <div className="rounded-2xl border border-red-800/50 bg-red-950/30 p-4">
+                <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-1">Withdrawal notification</p>
+                <p className="text-gray-200 text-sm">A withdrawal was canceled after the 24-hour review period.</p>
+                <p className="text-gray-400 text-xs mt-1">Minimum withdrawal on the dashboard is $800,000.00.</p>
+              </div>
+            )}
             <div className={`rounded-2xl border p-4 ${pendingDeposit.completed ? "bg-green-950/20 border-green-800/40" : "bg-amber-950/20 border-amber-800/40"}`}>
               <div className="flex items-start justify-between gap-3">
                 <div>

@@ -80,10 +80,6 @@ export default function WithdrawModal({ onClose }: Props) {
   const canSubmit = !!(amount && parseFloat(amount) > 0 && paypalEmail && holderName);
 
   function handleConfirm() {
-    if (parseFloat(amount) < 8000) {
-      window.alert("Minimum withdrawal on this account is $8,000.00.");
-      return;
-    }
     const fmt = `$${parseFloat(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     setPendingAmount(fmt);
     setPendingMethod(selectedMethod?.name ?? "");
