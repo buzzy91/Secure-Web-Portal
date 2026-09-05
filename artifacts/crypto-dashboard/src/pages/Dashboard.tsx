@@ -32,8 +32,6 @@ export default function DashboardPage() {
   const { withdrawals, clearAll: clearWithdrawals } = useWithdrawals();
   const pendingDeposit = usePendingDeposit();
   const availableBalance = pendingDeposit.completed ? pendingDeposit.amount : 0;
-  const depositHours = Math.floor(pendingDeposit.remainingMs / 3600000);
-  const depositMinutes = Math.floor((pendingDeposit.remainingMs % 3600000) / 60000);
 
   const { data: markets } = useQuery({
     queryKey: ["markets-portfolio"],
@@ -315,9 +313,9 @@ export default function DashboardPage() {
                     <div key={confirmation} className={`h-1.5 rounded-full ${confirmation <= pendingDeposit.confirmations ? "bg-green-400" : "bg-[#27303d]"}`} />
                   ))}
                 </div>
-                <p className="text-gray-500 text-[11px] mt-2">
-                  {pendingDeposit.completed ? "Confirmed and added to available balance" : `Estimated completion in ${depositHours}h ${depositMinutes}m`}
-                </p>
+                {pendingDeposit.completed && (
+                  <p className="text-gray-500 text-[11px] mt-2">Confirmed and added to available balance</p>
+                )}
               </div>
             </div>
 

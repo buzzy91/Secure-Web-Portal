@@ -9,8 +9,6 @@ export default function TransactionsPage() {
   const [, navigate] = useLocation();
   const { transactions, holdings } = useTransactions();
   const pendingDeposit = usePendingDeposit();
-  const hours = Math.floor(pendingDeposit.remainingMs / 3600000);
-  const minutes = Math.floor((pendingDeposit.remainingMs % 3600000) / 60000);
 
   const { data: markets } = useQuery({
     queryKey: ["markets-full"],
@@ -132,9 +130,9 @@ export default function TransactionsPage() {
                   <div key={confirmation} className={`h-1.5 rounded-full ${confirmation <= pendingDeposit.confirmations ? "bg-green-400" : "bg-[#27303d]"}`} />
                 ))}
               </div>
-              <p className="text-gray-500 text-[11px] mt-2">
-                {pendingDeposit.completed ? "Confirmed and added to available balance" : `Estimated completion in ${hours}h ${minutes}m`}
-              </p>
+              {pendingDeposit.completed && (
+                <p className="text-gray-500 text-[11px] mt-2">Confirmed and added to available balance</p>
+              )}
             </div>
           </div>
           {transactions.length > 0 && (

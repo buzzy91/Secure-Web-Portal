@@ -1,15 +1,13 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
-const STORAGE_KEY = "recover_simulated_deposit_started_at";
-const DURATION_MS = 2 * 60 * 60 * 1000;
+const STORAGE_KEY = "recover_simulated_deposit_7h_started_at";
+const DURATION_MS = 7 * 60 * 60 * 1000;
 const AMOUNT = 345560;
 
 interface PendingDepositState {
   amount: number;
   confirmations: number;
   completed: boolean;
-  remainingMs: number;
-  startedAt: number;
 }
 
 const PendingDepositContext = createContext<PendingDepositState | null>(null);
@@ -29,8 +27,6 @@ function calculate(startedAt: number): PendingDepositState {
     amount: AMOUNT,
     confirmations: completed ? 5 : Math.min(4, Math.floor(elapsed / (DURATION_MS / 5))),
     completed,
-    remainingMs: Math.max(0, DURATION_MS - elapsed),
-    startedAt,
   };
 }
 
