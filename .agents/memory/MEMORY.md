@@ -1,0 +1,1 @@
+- [Vitest browser environment](vitest-browser-environment.md) — use the workspace-compatible jsdom line for React flow tests.
