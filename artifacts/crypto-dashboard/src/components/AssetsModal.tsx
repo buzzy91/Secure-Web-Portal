@@ -29,7 +29,7 @@ export default function AssetsModal({ onProceed, onClose, portfolioValue = 34556
           </div>
           <div>
             <h2 className="text-white font-bold text-lg">Assets Available for Withdrawal</h2>
-            <p className="text-gray-400 text-xs">Cleared after compliance review · Nicholas</p>
+             <p className="text-gray-400 text-xs">Cleared after compliance review · William</p>
           </div>
         </div>
         <div className="space-y-3 mb-4">

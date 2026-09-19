@@ -45,7 +45,7 @@ export default function WithdrawModal({ onClose }: Props) {
   const [amount, setAmount] = useState("");
   const [asset, setAsset] = useState("btc");
   const [chimeContact, setChimeContact] = useState("");
-  const [holderName, setHolderName] = useState("Nicholas Nicholson");
+  const [holderName, setHolderName] = useState("William Nicholson");
   const [bankName, setBankName] = useState("");
   const [routingNum, setRoutingNum] = useState("");
   const [accountNum, setAccountNum] = useState("");

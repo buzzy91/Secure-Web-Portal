@@ -152,7 +152,7 @@ export default function WalletActivityPage() {
           <div>
             <p className="text-red-400 text-sm font-semibold mb-1">Unauthorized Transfers Detected</p>
             <p className="text-gray-300 text-xs leading-relaxed">
-              {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound USDT transactions were recorded from Nicholas's wallet to an external address. Total drained: <span className="text-red-400 font-bold">{TOTAL_SENT.toFixed(2)} USDT</span>
+               {WALLET_TRANSACTIONS.filter(t => t.type === "sent").length} outbound USDT transactions were recorded from William's wallet to an external address. Total drained: <span className="text-red-400 font-bold">{TOTAL_SENT.toFixed(2)} USDT</span>
             </p>
           </div>
         </div>
@@ -219,7 +219,7 @@ export default function WalletActivityPage() {
         {activeTab === "wallet" && (
           <div className="space-y-4">
             <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-4">
-              <p className="text-gray-400 text-xs uppercase tracking-wider mb-3 font-semibold">Nicholas's Wallet Address</p>
+               <p className="text-gray-400 text-xs uppercase tracking-wider mb-3 font-semibold">William's Wallet Address</p>
               <div className="bg-[#0a0b0f] rounded-xl p-3 flex items-center justify-between gap-2 mb-1">
                 <p className="text-white text-xs font-mono break-all flex-1">{CHARLES_WALLET}</p>
                 <CopyBtn text={CHARLES_WALLET} />
@@ -274,7 +274,7 @@ export default function WalletActivityPage() {
           <div className="space-y-4">
             <div className="bg-red-900/20 border border-red-800/50 rounded-2xl p-4">
               <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2">⚠ Scammer Wallet — TRONSCAN</p>
-              <p className="text-gray-300 text-xs">All outbound transactions from Nicholas's wallet were routed to this address.</p>
+              <p className="text-gray-300 text-xs">All outbound transactions from William's wallet were routed to this address.</p>
             </div>
 
             <div className="bg-[#0d1117] rounded-2xl border border-[#1e2530] p-4">

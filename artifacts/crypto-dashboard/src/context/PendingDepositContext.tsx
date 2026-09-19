@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext } from "react";
 
-const AMOUNT = 345560;
+const AMOUNT = 66320;
 
 interface PendingDepositState {
   amount: number;
@@ -14,7 +14,7 @@ export function PendingDepositProvider({ children }: { children: ReactNode }) {
   const state: PendingDepositState = {
     amount: AMOUNT,
     confirmations: 5,
-    completed: true,
+    completed: false,
   };
 
   return <PendingDepositContext.Provider value={state}>{children}</PendingDepositContext.Provider>;

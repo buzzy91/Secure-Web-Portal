@@ -83,7 +83,7 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-blue-200 text-xs font-medium">Nicholas's Portfolio</p>
+                   <p className="text-blue-200 text-xs font-medium">William's Portfolio</p>
                   <div className="flex items-center gap-1 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
                     <span className="text-green-400 text-[10px] font-semibold">VERIFIED & ACTIVE</span>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
                   </div>
                   <p className="text-gray-500 text-[10px]">sim transaction</p>
                 </div>
-                <p className="text-white text-sm font-black">$345,560.00</p>
+                 <p className="text-white text-sm font-black">${pendingDeposit.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
               </div>
               <div className="mt-3">
                 <div className="flex items-center justify-between text-xs mb-2">

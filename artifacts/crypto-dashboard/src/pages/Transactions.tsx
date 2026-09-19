@@ -118,7 +118,7 @@ export default function TransactionsPage() {
                 </div>
                 <p className="text-gray-500 text-[10px]">sim transaction</p>
               </div>
-              <p className="text-white text-sm font-black">$345,560.00</p>
+               <p className="text-white text-sm font-black">${pendingDeposit.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
             </div>
             <div className="mt-4">
               <div className="flex justify-between text-xs mb-2">
