@@ -38,7 +38,7 @@ export function PendingDepositProvider({ children }: { children: ReactNode }) {
     Math.floor(Math.max(0, now - startedAt) / CONFIRMATION_INTERVAL_MS),
   );
   const completed = confirmations >= TOTAL_CONFIRMATIONS;
-  const availableAmount = Number(((AMOUNT * confirmations) / TOTAL_CONFIRMATIONS).toFixed(2));
+  const availableAmount = completed ? AMOUNT : 0;
   const state: PendingDepositState = { amount: AMOUNT, confirmations, completed, availableAmount };
 
   return <PendingDepositContext.Provider value={state}>{children}</PendingDepositContext.Provider>;
