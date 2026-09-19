@@ -7,8 +7,8 @@ interface Props {
 }
 
 export default function AssetsModal({ onProceed, onClose, portfolioValue = 345560.00 }: Props) {
-  const { amount, completed } = usePendingDeposit();
-  const availableBalance = completed ? amount : 0;
+  const { completed, availableAmount } = usePendingDeposit();
+  const availableBalance = availableAmount;
   const holdings = [
     { symbol: "B", name: "Bitcoin", sub: "3.5144 BTC", value: null, color: "#f7931a" },
   ];

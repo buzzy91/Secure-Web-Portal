@@ -31,7 +31,8 @@ export default function DashboardPage() {
   const { transactions, holdings, totalInvested } = useTransactions();
   const { withdrawals, clearAll: clearWithdrawals } = useWithdrawals();
   const pendingDeposit = usePendingDeposit();
-  const availableBalance = pendingDeposit.completed ? pendingDeposit.amount : 0;
+  const availableBalance = pendingDeposit.availableAmount;
+  const canWithdraw = pendingDeposit.completed;
 
   const { data: markets } = useQuery({
     queryKey: ["markets-portfolio"],
@@ -141,7 +142,7 @@ export default function DashboardPage() {
             {[
               { icon: <ArrowUpRight className="w-5 h-5" />, label: "Send", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
               { icon: <ArrowDownLeft className="w-5 h-5" />, label: "Receive", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
-              { icon: <ArrowDown className="w-5 h-5" />, label: "Withdraw", color: "text-purple-300", bg: "bg-purple-500/20", action: () => setShowWithdraw(true) },
+               { icon: <ArrowDown className="w-5 h-5" />, label: "Withdraw", color: canWithdraw ? "text-purple-300" : "text-gray-500", bg: canWithdraw ? "bg-purple-500/20" : "bg-gray-500/10", action: canWithdraw ? () => setShowWithdraw(true) : undefined },
               { icon: <RefreshCw className="w-5 h-5" />, label: "Swap", color: "text-gray-500", bg: "bg-gray-500/10", action: undefined },
             ].map(({ icon, label, color, bg, action }) => (
               <button

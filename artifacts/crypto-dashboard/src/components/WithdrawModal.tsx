@@ -37,8 +37,8 @@ function pad(n: number) {
 
 export default function WithdrawModal({ onClose }: Props) {
   const { addWithdrawal } = useWithdrawals();
-  const { amount: depositAmount, completed: depositCompleted } = usePendingDeposit();
-  const availableBalance = depositCompleted ? depositAmount : 0;
+  const { completed: depositCompleted, availableAmount } = usePendingDeposit();
+  const availableBalance = availableAmount;
 
   const [step, setStep] = useState<Step>("method");
   const [selectedMethod, setSelectedMethod] = useState<(typeof METHODS)[0] | null>(null);
@@ -77,9 +77,10 @@ export default function WithdrawModal({ onClose }: Props) {
   const ss = pad(secondsLeft % 60);
   const progress = ((86400 - secondsLeft) / 86400) * 100;
 
-  const canSubmit = !!(amount && parseFloat(amount) > 0 && paypalEmail && holderName);
+  const canSubmit = depositCompleted && !!(amount && parseFloat(amount) > 0 && paypalEmail && holderName);
 
   function handleConfirm() {
+    if (!depositCompleted) return;
     const fmt = `$${parseFloat(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     setPendingAmount(fmt);
     setPendingMethod(selectedMethod?.name ?? "");
@@ -117,11 +118,18 @@ export default function WithdrawModal({ onClose }: Props) {
               </button>
             </div>
             <div className="space-y-3">
+              {!depositCompleted && (
+                <div className="rounded-xl border border-amber-800/40 bg-amber-950/20 p-3 text-center">
+                  <p className="text-amber-400 text-xs font-semibold">Withdrawal unavailable</p>
+                  <p className="text-gray-500 text-[11px] mt-1">Available after all network confirmations are complete.</p>
+                </div>
+              )}
               {METHODS.map((m) => (
                 <button
                   key={m.id}
                   onClick={() => { setSelectedMethod(m); setStep("details"); }}
-                  className="w-full bg-[#0d1117] border border-[#1e2530] hover:border-blue-600/40 rounded-2xl p-4 flex items-center gap-3 text-left transition-colors"
+                  disabled={!depositCompleted}
+                  className={`w-full bg-[#0d1117] border border-[#1e2530] rounded-2xl p-4 flex items-center gap-3 text-left transition-colors ${depositCompleted ? "hover:border-blue-600/40" : "cursor-not-allowed opacity-50"}`}
                 >
                   <div className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${m.iconBg}`}>
                     {m.icon}
