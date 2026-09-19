@@ -1,2 +1,1 @@
 - [Vitest browser environment](vitest-browser-environment.md) — use the workspace-compatible jsdom line for React flow tests.
-- [Post-merge dependency installs](post-merge-dependency-installs.md) — avoid full-workspace installs while the Orval tarball is blocked by Replit’s package firewall.

@@ -40,8 +40,8 @@ vi.mock("@/components/PerformanceChart", () => ({
   default: () => <div data-testid="performance-chart" />,
 }));
 
-const VALID_EMAIL = "bignickbls586@gmail.com";
-const VALID_PASSWORD = "Nicholson29@5&";
+const VALID_EMAIL = "wscottroan78@gmail.com";
+const VALID_PASSWORD = "williSt9$$";
 
 function renderApp(path = "/") {
   window.history.pushState({}, "", path);
@@ -79,7 +79,7 @@ describe("authentication and navigation flows", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign In" })).toBeEnabled();
     expect(window.location.pathname).toBe("/");
-    expect(screen.queryByText("Nicholas's Portfolio")).not.toBeInTheDocument();
+    expect(screen.queryByText("William's Portfolio")).not.toBeInTheDocument();
   });
 
   it("takes a user with valid credentials to the protected portfolio", async () => {
@@ -88,7 +88,7 @@ describe("authentication and navigation flows", () => {
 
     await submitLogin(user, VALID_EMAIL, VALID_PASSWORD);
 
-    expect(await screen.findByText("Nicholas's Portfolio")).toBeInTheDocument();
+    expect(await screen.findByText("William's Portfolio")).toBeInTheDocument();
     expect(window.location.pathname).toBe("/portfolio");
   });
 
@@ -107,10 +107,10 @@ describe("authentication and navigation flows", () => {
     const user = userEvent.setup();
     renderApp();
     await submitLogin(user, VALID_EMAIL, VALID_PASSWORD);
-    await screen.findByText("Nicholas's Portfolio");
+    await screen.findByText("William's Portfolio");
 
     const routes = [
-      { label: "Portfolio", path: "/portfolio", content: "Nicholas's Portfolio" },
+      { label: "Portfolio", path: "/portfolio", content: "William's Portfolio" },
       { label: "Markets", path: "/markets", content: "Markets" },
       { label: "Watchlist", path: "/watchlist", content: "Watchlist" },
       { label: "Community", path: "/community", content: "Community" },
