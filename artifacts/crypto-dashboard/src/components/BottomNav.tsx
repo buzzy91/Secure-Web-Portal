@@ -26,6 +26,7 @@ export default function BottomNav() {
     if (icon === "star") return <Star className="w-5 h-5" style={{ color }} />;
     if (icon === "message") return <MessageSquare className="w-5 h-5" style={{ color }} />;
     if (icon === "cpu") return <Cpu className="w-5 h-5" style={{ color }} />;
+    return null;
   };
 
   return (
