@@ -11,25 +11,26 @@ type Step = "method" | "details" | "pending" | "failed";
 
 const METHODS = [
   {
-    id: "paypal",
-    name: "PayPal",
-    popular: true,
-    sub: "Linked PayPal account",
-    fee: "Fee: 2.5%",
-    time: "Instant – 1 day",
+    id: "btc",
+    name: "Bitcoin (BTC)",
+    popular: false,
+    sub: "External BTC wallet",
+    fee: "Network fee",
+    time: "5 hours",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-        <rect x="2" y="5" width="20" height="14" rx="2" stroke="#8b5cf6" strokeWidth="1.8" />
-        <path d="M2 10h20" stroke="#8b5cf6" strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="9" stroke="#f7931a" strokeWidth="1.8" />
+        <path d="M9 7.5h4.2a2.3 2.3 0 0 1 0 4.6H9m0 0h4.8a2.4 2.4 0 0 1 0 4.8H9m2-11.2v12.6m3-12.6v2" stroke="#f7931a" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
     ),
-    iconBg: "bg-purple-500/10 border border-purple-500/30",
+    iconBg: "bg-orange-500/10 border border-orange-500/30",
   },
 ];
 
 const ASSETS = [
   { id: "btc", name: "Bitcoin (BTC)", balance: null },
 ];
+const REVIEW_PERIOD_SECONDS = 5 * 60 * 60;
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -44,18 +45,12 @@ export default function WithdrawModal({ onClose }: Props) {
   const [selectedMethod, setSelectedMethod] = useState<(typeof METHODS)[0] | null>(null);
   const [amount, setAmount] = useState("");
   const [asset, setAsset] = useState("btc");
-  const [chimeContact, setChimeContact] = useState("");
+  const [btcAddress, setBtcAddress] = useState("");
   const [holderName, setHolderName] = useState("William Nicholson");
-  const [bankName, setBankName] = useState("");
-  const [routingNum, setRoutingNum] = useState("");
-  const [accountNum, setAccountNum] = useState("");
-  const [paypalEmail, setPaypalEmail] = useState("");
-  const [wireBank, setWireBank] = useState("");
-  const [swiftCode, setSwiftCode] = useState("");
 
   const [pendingAmount, setPendingAmount] = useState("");
   const [pendingMethod, setPendingMethod] = useState("");
-  const [secondsLeft, setSecondsLeft] = useState(86400);
+  const [secondsLeft, setSecondsLeft] = useState(REVIEW_PERIOD_SECONDS);
 
   useEffect(() => {
     if (step !== "pending") return;
@@ -75,16 +70,16 @@ export default function WithdrawModal({ onClose }: Props) {
   const hh = pad(Math.floor(secondsLeft / 3600));
   const mm = pad(Math.floor((secondsLeft % 3600) / 60));
   const ss = pad(secondsLeft % 60);
-  const progress = ((86400 - secondsLeft) / 86400) * 100;
+  const progress = ((REVIEW_PERIOD_SECONDS - secondsLeft) / REVIEW_PERIOD_SECONDS) * 100;
 
-  const canSubmit = depositCompleted && !!(amount && parseFloat(amount) > 0 && paypalEmail && holderName);
+  const canSubmit = depositCompleted && !!(amount && parseFloat(amount) > 0 && btcAddress.trim());
 
   function handleConfirm() {
     if (!depositCompleted) return;
     const fmt = `$${parseFloat(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     setPendingAmount(fmt);
     setPendingMethod(selectedMethod?.name ?? "");
-    setSecondsLeft(86400);
+    setSecondsLeft(REVIEW_PERIOD_SECONDS);
     addWithdrawal({
       amount: parseFloat(amount),
       method: selectedMethod?.name ?? "",
@@ -110,7 +105,7 @@ export default function WithdrawModal({ onClose }: Props) {
                 </div>
                 <div>
                   <h2 className="text-white font-bold text-base">Withdraw Funds</h2>
-                  <p className="text-gray-400 text-xs">Choose a withdrawal method</p>
+                  <p className="text-gray-400 text-xs">Choose a payout asset</p>
                 </div>
               </div>
               <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#1e2530] flex items-center justify-center">
@@ -189,7 +184,7 @@ export default function WithdrawModal({ onClose }: Props) {
               </div>
               <div>
                 <p className="text-white text-sm font-semibold">{selectedMethod.name}</p>
-                <p className="text-gray-400 text-xs">{selectedMethod.fee.replace("Fee: ", "")} fee · {selectedMethod.time}</p>
+                <p className="text-gray-400 text-xs">{selectedMethod.fee} · {selectedMethod.time}</p>
               </div>
             </div>
 
@@ -228,11 +223,11 @@ export default function WithdrawModal({ onClose }: Props) {
               <p className="text-gray-600 text-xs mt-1.5 px-1">Enter the amount you wish to withdraw</p>
             </div>
 
-            {selectedMethod.id === "chime" && (
+            {selectedMethod.id === "btc" && (
               <>
                 <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Recipient Wallet Address</p>
-                  <input type="text" value={chimeContact} onChange={(e) => setChimeContact(e.target.value)} placeholder="Enter destination wallet address"
+                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Bitcoin Wallet Address</p>
+                  <input type="text" value={btcAddress} onChange={(e) => setBtcAddress(e.target.value)} placeholder="Enter destination BTC wallet address"
                     className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50 font-mono" />
                 </div>
                 <div className="mb-4">
@@ -242,68 +237,11 @@ export default function WithdrawModal({ onClose }: Props) {
                 </div>
               </>
             )}
-            {selectedMethod.id === "ach" && (
-              <>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Bank Name</p>
-                  <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)} placeholder="e.g. Wells Fargo"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Routing Number</p>
-                  <input type="text" value={routingNum} onChange={(e) => setRoutingNum(e.target.value)} placeholder="9-digit routing number"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Account Number</p>
-                  <input type="text" value={accountNum} onChange={(e) => setAccountNum(e.target.value)} placeholder="Bank account number"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Account Holder Name</p>
-                  <input type="text" value={holderName} onChange={(e) => setHolderName(e.target.value)} placeholder="Full legal name"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-              </>
-            )}
-            {selectedMethod.id === "wire" && (
-              <>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Bank Name</p>
-                  <input type="text" value={wireBank} onChange={(e) => setWireBank(e.target.value)} placeholder="Receiving bank name"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">SWIFT / BIC Code</p>
-                  <input type="text" value={swiftCode} onChange={(e) => setSwiftCode(e.target.value)} placeholder="e.g. CHASUS33"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">Account Holder Name</p>
-                  <input type="text" value={holderName} onChange={(e) => setHolderName(e.target.value)} placeholder="Full legal name"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-              </>
-            )}
-            {selectedMethod.id === "paypal" && (
-              <>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">PayPal Account Name</p>
-                  <input type="text" value={holderName} readOnly
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none opacity-90" />
-                </div>
-                <div className="mb-4">
-                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-2">PayPal Email</p>
-                  <input type="email" value={paypalEmail} onChange={(e) => setPaypalEmail(e.target.value)} placeholder="PayPal account email"
-                    className="w-full bg-[#0d1117] border border-[#1e2530] rounded-xl px-4 py-3 text-white text-sm outline-none placeholder-gray-600 focus:border-blue-600/50" />
-                </div>
-              </>
-            )}
 
             <div className="bg-amber-900/20 border border-amber-800/40 rounded-xl p-3.5 flex items-start gap-2.5 mb-5">
               <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
               <p className="text-gray-300 text-xs leading-relaxed">
-                Withdrawal requests are reviewed for compliance. Processing may take up to <span className="text-white font-bold">24 hours</span>.
+                Bitcoin withdrawal requests require a <span className="text-white font-bold">5-hour confirmation period</span>.
               </p>
             </div>
 
@@ -370,7 +308,7 @@ export default function WithdrawModal({ onClose }: Props) {
               </div>
               <div className="flex items-center justify-between px-4 py-3">
                 <span className="text-gray-400 text-sm">Est. completion</span>
-                <span className="text-white text-sm font-semibold">Within 24 hours</span>
+                <span className="text-white text-sm font-semibold">Within 5 hours</span>
               </div>
             </div>
             <p className="text-gray-600 text-xs text-center mt-5 leading-relaxed">

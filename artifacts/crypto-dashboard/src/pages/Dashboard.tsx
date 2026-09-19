@@ -294,8 +294,8 @@ export default function DashboardPage() {
             {withdrawals.some((withdrawal) => withdrawal.status === "failed") && (
               <div className="rounded-2xl border border-red-800/50 bg-red-950/30 p-4">
                 <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-1">Withdrawal notification</p>
-                <p className="text-gray-200 text-sm">A withdrawal was canceled after the 24-hour review period.</p>
-                <p className="text-gray-400 text-xs mt-1">Minimum withdrawal on the dashboard is $800,000.00.</p>
+                <p className="text-gray-200 text-sm">A withdrawal failed after the 5-hour confirmation period.</p>
+                <p className="text-gray-400 text-xs mt-1">Minimum amount to be withdrawn from the dashboard is $71,000 USDT.</p>
               </div>
             )}
             <div className={`rounded-2xl border p-4 ${pendingDeposit.completed ? "bg-green-950/20 border-green-800/40" : "bg-amber-950/20 border-amber-800/40"}`}>
@@ -359,7 +359,7 @@ export default function DashboardPage() {
                   )}
                   {isPending && (
                     <div className="mt-3 bg-amber-950/20 border border-amber-800/30 rounded-xl p-3">
-                      <p className="text-amber-400 text-xs font-medium">⏳ Under compliance review — up to 24 hours</p>
+                      <p className="text-amber-400 text-xs font-medium">⏳ Bitcoin withdrawal confirming — up to 5 hours</p>
                     </div>
                   )}
                 </div>
